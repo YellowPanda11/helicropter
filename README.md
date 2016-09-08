@@ -37,9 +37,8 @@
 #### Contributing
 
 1. Fork the repo
-1. Run `npm install` and `bower install` within the main repo
+1. Run `npm i` within the main repo
 1. Run `npm start` to rebuild a distributable (for the demo) on save
-1. `cd demo/ && npm install` to set up the dependencies for the demo page
-1. Run `node demo/server.js` to kick off the demo server
+1. `cd demo/ && npm i && npm start` to set up the dependencies for the demo page and begin the demo server
 1. Visit [http://localhost:8000/](http://localhost:8000) to see your changes in the demo
- - You may need to modify the configuration (`demo/public/index.js`) based on your feature's needs
+ - You may need to modify the configuration (`demo/index.js`) based on your feature's needs
