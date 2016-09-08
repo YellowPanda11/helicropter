@@ -1,4 +1,4 @@
-/* jshint node: true */
+/* eslint-env node */
 var path = require('path');
 var Notifier = require('webpack-notifier');
 var hgn = require('hgn-loader');
@@ -8,23 +8,23 @@ var commonLoaders = [
   {
     test: /(\.js)$/,
     exclude: /node_modules/,
-    loader: 'babel',
-    query: {
-      optional: ['runtime']
-    }
+    loader: 'babel'
+  },
+  {
+    test: /(fine-uploader|guillotine).*\.js$/,
+    loader: 'imports?jQuery=jquery'
   },
   { test: /\.(png|jpg|gif)$/, loader: 'url?limit=25000' }
 ];
 
-var assetsPath = path.join(__dirname, 'dist', 'js');
+var demoPath = path.join(__dirname, 'demo');
 
 module.exports = {
-  name: 'browser',
-  entry: './src/js/index.js',
+  name: 'demo',
+  entry: demoPath + '/index.js',
   output: {
-    path: assetsPath,
-    libraryTarget: 'umd',
-    filename: 'helicropter.js'
+    path: path.join(demoPath, 'public'),
+    filename: 'index.js'
   },
   resolve: {
     root: path.join(__dirname, 'src', 'js'),

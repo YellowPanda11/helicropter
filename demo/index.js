@@ -1,16 +1,6 @@
-require.config({
-  paths: {
-    helicropter: '/dist/js/helicropter',
-    jquery: '/vendor/jquery/dist/jquery',
-    beff: '/vendor/beff',
-    nbd: '/vendor/beff/bower_components/nbd',
-    fineuploader: '/vendor/beff/bower_components/fineuploader/dist'
-  }
-});
-
 define([
   'jquery',
-  'helicropter'
+  '../src/js/index'
 ], function($, Helicropter) {
   'use strict';
 
@@ -42,8 +32,8 @@ define([
     },
     viewportRatio: 'static',
     allowTransparency: false,
-    //uploadTitle: 'Upload a new cover image',
-    //uploadSubtitle: 'This will not affect your Behance cover image',
+    // uploadTitle: 'Upload a new cover image',
+    // uploadSubtitle: 'This will not affect your Behance cover image',
     initialImage: {
       src: '/imgs/test-letters.png',
       url: 'https://foo.com/imgs/test-letters.png',
@@ -53,7 +43,7 @@ define([
         scale: 0.4105
       }
     },
-    //previewMode: true,
+    // previewMode: true,
     uploadBackgroundImage: '/imgs/test-letters.png',
     showRatioLock: true,
     showSuggestions: true,

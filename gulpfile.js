@@ -5,19 +5,17 @@ var sass = require('gulp-sass');
 var watch = require('gulp-watch');
 var livereload = require('gulp-livereload');
 
-var noop = function() {};
-
 var webpack = require('webpack');
 var webpackConfig = require('./webpack.config');
 
 var webpackInst = webpack(webpackConfig);
-gulp.task("webpack", function(cb) {
+gulp.task('webpack', function(cb) {
   webpackInst.run(function(err, stats) {
     if (err) {
-      throw new gutil.PluginError("webpack", err);
+      throw new gutil.PluginError('webpack', err);
     }
 
-    gutil.log("[webpack]", stats.toString({
+    gutil.log('[webpack]', stats.toString({
       colors: true,
       version: false,
       chunks: false,
@@ -38,7 +36,7 @@ gulp.task('sass', function() {
 gulp.task('watch', ['webpack', 'sass'], function() {
   livereload.listen();
 
-  watch(['src/js/**/*', 'src/templates/**/*'], function() { gulp.start('webpack'); });
+  watch(['demo/index.js', 'src/js/**/*', 'src/templates/**/*'], function() { gulp.start('webpack'); });
   watch(['src/css/**/*.scss'], function() { gulp.start('sass'); });
 
   gulp.watch(['dist/**/*']).on('change', livereload.changed);

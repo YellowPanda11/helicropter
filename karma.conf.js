@@ -1,8 +1,7 @@
-/* jshint node: true */
+/* eslint-env node */
 // Karma configuration
 // Generated on Fri May 16 2014 10:44:21 GMT-0400 (EDT)
 
-var webpack = require('webpack');
 var webpackConfig = require('./webpack.config.js');
 delete webpackConfig.entry;
 delete webpackConfig.output;
