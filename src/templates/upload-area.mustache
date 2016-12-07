@@ -4,7 +4,9 @@
   {{/backgroundImage}}
   <div class="js-image-upload-wrapper image-upload-wrapper">
     <div class="js-upload-button image-upload">
-      {{>uploadIcon}}
+      {{<uploadIcon}}
+        {{$classes}}upload-icon--large{{/classes}}
+      {{/uploadIcon}}
       {{#titleText}}
       <div class="image-upload-text js-image-upload-text">{{titleText}}</div>
       {{/titleText}}

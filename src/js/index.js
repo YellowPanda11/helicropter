@@ -63,7 +63,8 @@ const HelicropterView = View.extend({
       height: this._model.get('canvasSize').height,
       titleText: this._model.get('uploadTitle'),
       subtitleText: this._model.get('uploadSubtitle'),
-      hasInitialImage: this._model.get('initialImage')
+      hasInitialImage: this._model.get('initialImage'),
+      newUploader: this._model.get('newUploader')
     });
     this._uploadArea.render(this.$view.find('.js-upload-container'));
   },
@@ -101,7 +102,8 @@ const HelicropterView = View.extend({
   _addSuggestionArea() {
     if (this._model.get('showSuggestions')) {
       this._suggestionArea = new SuggestionArea({
-        suggestions: this._model.get('suggestions')
+        suggestions: this._model.get('suggestions'),
+        newUploader: this._model.get('newUploader')
       });
       this._suggestionArea.render(this.$view.find('.js-suggestions'));
     }
@@ -120,7 +122,8 @@ const HelicropterView = View.extend({
 
     this._previewCrop = new PreviewCrop({
       cropWidth: this._model.get('cropSize').width,
-      cropHeight: this._model.get('cropSize').height
+      cropHeight: this._model.get('cropSize').height,
+      newUploader: this._model.get('newUploader')
     });
     this._previewCrop.render(config.element);
   },
