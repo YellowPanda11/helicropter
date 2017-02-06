@@ -64,7 +64,8 @@ const HelicropterView = View.extend({
       titleText: this._model.get('uploadTitle'),
       subtitleText: this._model.get('uploadSubtitle'),
       hasInitialImage: this._model.get('initialImage'),
-      newUploader: this._model.get('newUploader')
+      newUploader: this._model.get('newUploader'),
+      uploadImmediately: this._model.get('uploadImmediately')
     });
     this._uploadArea.render(this.$view.find('.js-upload-container'));
   },
@@ -257,6 +258,7 @@ const Helicropter = Controller.extend({
       width: 320,
       height: 250
     },
+    uploadImmediately: false,
     previewMode: false,
     viewportRatio: 'static',
     ratioLockText: 'Enable aspect ratio for cover image resize',

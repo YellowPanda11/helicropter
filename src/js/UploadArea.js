@@ -101,6 +101,10 @@ export default View.extend({
 
     this._bindUploader();
     this.on('upload-image', () => this._uploadImage());
+
+    if (this._model.uploadImmediately) {
+      this._uploadImage();
+    }
   },
 
   hide() {
@@ -158,4 +162,6 @@ export default View.extend({
       }
     });
   }
+}, {
+  Uploader
 });
