@@ -104,7 +104,8 @@ const HelicropterView = View.extend({
     if (this._model.get('showSuggestions')) {
       this._suggestionArea = new SuggestionArea({
         suggestions: this._model.get('suggestions'),
-        newUploader: this._model.get('newUploader')
+        newUploader: this._model.get('newUploader'),
+        maxSuggestions: this._model.get('maxSuggestions')
       });
       this._suggestionArea.render(this.$view.find('.js-suggestions'));
     }

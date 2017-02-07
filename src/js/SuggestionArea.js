@@ -3,12 +3,13 @@ import View from 'beff/View';
 
 import template from 'hgn!../templates/suggesstion-area';
 
-export default View.extend({
-  _maxSuggestions: 7,
+const DEFAULT_MAX_SUGGESTIONS = 7;
 
+export default View.extend({
   mustache: template,
 
   init(model) {
+    this._maxSuggestions = model.maxSuggestions || DEFAULT_MAX_SUGGESTIONS;
     this._$activeElement = null;
     this._super(this._padOrTruncateSuggestions(model));
 
