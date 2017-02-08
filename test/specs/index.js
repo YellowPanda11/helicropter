@@ -86,6 +86,77 @@ describe('Helicropter', function() {
     });
   });
 
+  describe('displayErrors option', function() {
+    describe('when true', function() {
+      beforeEach(function() {
+        this.helicropter = this._createWithoutInitialImage({ displayErrors: true, showSuggestions: true });
+      });
+
+      it('does not show an error by default', function() {
+        expect($('.js-croploader-errors')).not.toBeVisible();
+      });
+
+      it('shows a default error message when not provided by upload-error event', function() {
+        this.helicropter._view._uploadArea.trigger('upload-error', {});
+        expect($('.js-croploader-errors')).toBeVisible();
+        expect($('.js-croploader-errors')).toContainText('There was a problem uploading your image. Please try again.');
+      });
+
+      it('shows message when provided by the upload-error event', function() {
+        const message = 'bing bing bong';
+        this.helicropter._view._uploadArea.trigger('upload-error', { message });
+        expect($('.js-croploader-errors')).toBeVisible();
+        expect($('.js-croploader-errors')).toContainText(message);
+      });
+
+      describe('after an upload-error event', function() {
+        beforeEach(function() {
+          this.helicropter._view._uploadArea.trigger('upload-error', {});
+        });
+
+        it('hides the error when you begin uploading a new image', function() {
+          this.helicropter._view._uploadArea.trigger('image-uploading');
+          expect($('.js-croploader-errors')).not.toBeVisible();
+        });
+
+        it('hides the error when you choose a new image from the suggestion area', function() {
+          this.helicropter._view._suggestionArea.trigger('set-image', { url: '', src: '' });
+          expect($('.js-croploader-errors')).not.toBeVisible();
+        });
+      });
+    });
+
+    describe('when false', function() {
+      beforeEach(function() {
+        this.helicropter = this._createWithoutInitialImage({ displayErrors: false });
+      });
+
+      it('does not show an error by default', function() {
+        expect($('.js-croploader-errors')).not.toBeVisible();
+      });
+
+      it('does not show an error message on upload-error', function() {
+        this.helicropter._view._uploadArea.trigger('upload-error', {});
+        expect($('.js-croploader-errors')).not.toBeVisible();
+      });
+    });
+
+    describe('when not provided', function() {
+      beforeEach(function() {
+        this.helicropter = this._createWithoutInitialImage();
+      });
+
+      it('does not show an error by default', function() {
+        expect($('.js-croploader-errors')).not.toBeVisible();
+      });
+
+      it('does not show an error message on upload-error', function() {
+        this.helicropter._view._uploadArea.trigger('upload-error', {});
+        expect($('.js-croploader-errors')).not.toBeVisible();
+      });
+    });
+  });
+
   describe('when given preview crop configuration', function() {
     beforeEach(function() {
       this.helicropter = this._createWithInitialImage({
