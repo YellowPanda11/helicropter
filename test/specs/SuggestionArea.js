@@ -39,6 +39,21 @@ describe('SuggestionArea', function() {
     expect(suggestionArea.$view.find('.js-suggestion-item.empty').length).toBe(4);
   });
 
+  it('can be configured with a different number of max suggestions', function() {
+    const suggestionArea = createSuggestionArea(this.$el, {
+      suggestions: [
+        { src: 'blob:foo', url: 'http://path/to/foo' },
+        { src: 'blob:bar', url: 'http://path/to/bar' },
+        { src: 'blob:baz', url: 'http://path/to/baz' }
+      ],
+      maxSuggestions: 10
+    });
+    suggestionArea.render(this.$el);
+
+    expect(suggestionArea.$view.find('.js-suggestion-item:not(.empty)').length).toBe(3);
+    expect(suggestionArea.$view.find('.js-suggestion-item.empty').length).toBe(7);
+  });
+
   describe('"image-loaded" event', function() {
     describe('when there are no suggestions', function() {
       it('shows the suggestion area and adds the new image as the first suggestion', function() {
