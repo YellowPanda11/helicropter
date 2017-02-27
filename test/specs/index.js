@@ -58,6 +58,19 @@ describe('Helicropter', function() {
     });
   });
 
+  describe('#uploadImage', function() {
+    it('returns the result of choose on the uploadArea uploader', function(done) {
+      const expectedValue = 'boop';
+      this.helicropter = this._createWithInitialImage();
+      spyOn(this.helicropter._view._uploadArea._uploader, 'choose').and.returnValue(Promise.resolve(expectedValue));
+
+      this.helicropter.uploadImage().then(value => {
+        expect(value).toBe(expectedValue);
+        done();
+      });
+    });
+  });
+
   describe('when given an initial image', function() {
     beforeEach(function() {
       this.helicropter = this._createWithInitialImage();

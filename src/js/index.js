@@ -293,6 +293,10 @@ const Helicropter = Controller.extend({
     this._view.setCropperAspectRatio(ratio);
   },
 
+  uploadImage() {
+    return this._view._uploadArea.uploadImage();
+  },
+
   removeImage() {
     this._view.trigger('remove-image');
   }

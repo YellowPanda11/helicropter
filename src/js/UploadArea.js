@@ -100,10 +100,10 @@ export default View.extend({
       this.showUploadState();
 
     this._bindUploader();
-    this.on('upload-image', () => this._uploadImage());
+    this.on('upload-image', () => this.uploadImage());
 
     if (this._model.uploadImmediately) {
-      this._uploadImage();
+      this.uploadImage();
     }
   },
 
@@ -125,8 +125,8 @@ export default View.extend({
     this._spinner.spin(this._$btnArea[0]);
   },
 
-  _uploadImage() {
-    this._uploader.choose();
+  uploadImage() {
+    return this._uploader.choose();
   },
 
   _URL() {
