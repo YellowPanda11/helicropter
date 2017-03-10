@@ -8,8 +8,8 @@ export default View.extend({
 
   events: {
     change: {
-      '.js-ratio-lock': '_toggleRatioLock'
-    }
+      '.js-ratio-lock': '_toggleRatioLock',
+    },
   },
 
   rendered() {
@@ -19,7 +19,7 @@ export default View.extend({
   templateData() {
     return extend({
       checked: true,
-      labelText: 'Enable aspect ratio for cover image resize'
+      labelText: 'Enable aspect ratio for cover image resize',
     }, this._model);
   },
 
@@ -35,5 +35,5 @@ export default View.extend({
 
   _toggleRatioLock() {
     this.trigger('ratio-locked', this._$ratioCheckbox.prop('checked'));
-  }
+  },
 });

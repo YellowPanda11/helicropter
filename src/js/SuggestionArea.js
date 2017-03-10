@@ -19,14 +19,14 @@ export default View.extend({
           src,
           url,
           cover: true,
-          active: true
+          active: true,
         };
 
         this._model.suggestions = [newSuggestion].concat(this._model.suggestions);
         this._model = this._padOrTruncateSuggestions(this._model);
 
         this.render();
-      }
+      },
     });
   },
 
@@ -34,15 +34,15 @@ export default View.extend({
     const data = this._model;
 
     return Object.assign({}, {
-      emptySuggestions: !data.suggestions || data.suggestions[0].empty
+      emptySuggestions: !data.suggestions || data.suggestions[0].empty,
     }, data);
   },
 
   events: {
     click: {
       '.js-upload-btn': ':upload-image',
-      '.js-suggestion-item': '_setImage'
-    }
+      '.js-suggestion-item': '_setImage',
+    },
   },
 
   reset() {
@@ -78,5 +78,5 @@ export default View.extend({
     this._$activeElement.addClass('active');
 
     this.trigger('set-image', { src: target.dataset.src, url: target.dataset.url });
-  }
+  },
 });

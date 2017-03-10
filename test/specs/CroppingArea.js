@@ -31,7 +31,7 @@ describe('CroppingArea', function() {
 
       this.croppingArea._cropArea = {
         getWidth: () => 100,
-        getHeight: () => 50
+        getHeight: () => 50,
       };
 
       this.croppingArea._image = { getScaleX: () => 1.0 };
@@ -41,7 +41,7 @@ describe('CroppingArea', function() {
         y: 0,
         width: 100,
         height: 50,
-        scale: 1.0
+        scale: 1.0,
       });
     });
   });

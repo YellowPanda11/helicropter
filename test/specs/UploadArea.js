@@ -13,7 +13,7 @@ describe('UploadArea', function() {
       width: config.canvasSize.width,
       height: config.canvasSize.height,
       titleText: config.uploadTitle,
-      subtitleText: config.uploadSubtitle
+      subtitleText: config.uploadSubtitle,
     };
 
     this.create = (customOptions) => {
@@ -37,7 +37,7 @@ describe('UploadArea', function() {
 
   it('allows for a custom title', function() {
     this.uploadArea = this.create({
-      titleText: 'foobar'
+      titleText: 'foobar',
     });
 
     expect($('.js-image-upload-text')).toHaveText('foobar');
@@ -45,7 +45,7 @@ describe('UploadArea', function() {
 
   it('allows for a nullified title', function() {
     this.uploadArea = this.create({
-      titleText: ''
+      titleText: '',
     });
 
     expect($('.js-image-upload-text')).toHaveText('');
@@ -61,7 +61,7 @@ describe('UploadArea', function() {
 
   it('allows for a custom subtitle', function() {
     this.uploadArea = this.create({
-      subtitleText: 'foobar'
+      subtitleText: 'foobar',
     });
 
     expect($('.js-image-upload-subtext')).toHaveText('foobar');
@@ -74,7 +74,7 @@ describe('UploadArea', function() {
 
     it('allows uploading immediately', function() {
       this.uploadArea = this.create({
-        uploadImmediately: true
+        uploadImmediately: true,
       });
 
       expect(UploadArea.Uploader.prototype.choose).toHaveBeenCalled();
@@ -92,7 +92,7 @@ describe('UploadArea', function() {
       this.uploadArea = this.create();
 
       spyOn(this.uploadArea, '_URL').and.returnValue({
-        createObjectURL: () => 'acoolblob'
+        createObjectURL: () => 'acoolblob',
       });
 
       this.uploadArea.on('image-uploaded', function({ src, url }) {
@@ -106,8 +106,8 @@ describe('UploadArea', function() {
         uploadEndpoint: 'endpoint',
         uploadPath: 'path',
         response: {
-          success: true
-        }
+          success: true,
+        },
       });
     });
   });

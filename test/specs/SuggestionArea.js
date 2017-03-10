@@ -30,8 +30,8 @@ describe('SuggestionArea', function() {
       suggestions: [
         { src: 'blob:foo', url: 'http://path/to/foo' },
         { src: 'blob:bar', url: 'http://path/to/bar' },
-        { src: 'blob:baz', url: 'http://path/to/baz' }
-      ]
+        { src: 'blob:baz', url: 'http://path/to/baz' },
+      ],
     });
     suggestionArea.render(this.$el);
 
@@ -44,9 +44,9 @@ describe('SuggestionArea', function() {
       suggestions: [
         { src: 'blob:foo', url: 'http://path/to/foo' },
         { src: 'blob:bar', url: 'http://path/to/bar' },
-        { src: 'blob:baz', url: 'http://path/to/baz' }
+        { src: 'blob:baz', url: 'http://path/to/baz' },
       ],
-      maxSuggestions: 10
+      maxSuggestions: 10,
     });
     suggestionArea.render(this.$el);
 
@@ -61,7 +61,7 @@ describe('SuggestionArea', function() {
 
         this.suggestionArea.trigger('image-uploaded', {
           src: 'newimage',
-          url: 'newimage.fake.com'
+          url: 'newimage.fake.com',
         });
 
         const firstSuggestion = this.$el.find('.js-suggestion-item:first');
@@ -79,8 +79,8 @@ describe('SuggestionArea', function() {
           suggestions: [
             { src: 'blob:foo', url: 'http://path/to/foo' },
             { src: 'blob:bar', url: 'http://path/to/bar' },
-            { src: 'blob:baz', url: 'http://path/to/baz' }
-          ]
+            { src: 'blob:baz', url: 'http://path/to/baz' },
+          ],
         });
         this.suggestionArea.render(this.$el);
       });
@@ -91,7 +91,7 @@ describe('SuggestionArea', function() {
 
         this.suggestionArea.trigger('image-uploaded', {
           src: 'newimage',
-          url: 'newimage.fake.com'
+          url: 'newimage.fake.com',
         });
 
         const firstSuggestion = $(this.$el.find('.js-suggestion-item')[0]);
@@ -120,8 +120,8 @@ describe('SuggestionArea', function() {
             { src: 'blob:4', url: 'http://path/to/4' },
             { src: 'blob:5', url: 'http://path/to/5' },
             { src: 'blob:6', url: 'http://path/to/6' },
-            { src: 'blob:7', url: 'http://path/to/7' }
-          ]
+            { src: 'blob:7', url: 'http://path/to/7' },
+          ],
         });
         this.suggestionArea.render(this.$el);
       });
@@ -132,7 +132,7 @@ describe('SuggestionArea', function() {
 
         this.suggestionArea.trigger('image-uploaded', {
           src: 'newimage',
-          url: 'newimage.fake.com'
+          url: 'newimage.fake.com',
         });
 
         const firstSuggestion = $(this.$el.find('.js-suggestion-item')[0]);

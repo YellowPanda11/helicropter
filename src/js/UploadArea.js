@@ -28,7 +28,7 @@ const SPINNER_OPTIONS = {
   left: '50%',
   shadow: false,
   hwaccel: true,
-  position: 'absolute'
+  position: 'absolute',
 };
 
 const Uploader = CloudUploader.extend({
@@ -46,33 +46,33 @@ const Uploader = CloudUploader.extend({
     $.extend(config, {
       drift: 0,
       cors: {
-        expected: true
+        expected: true,
       },
       validation: {
         sizeLimit: 8388608,
         allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'],
         image: {
           minHeight: 316,
-          minWidth: 404
+          minWidth: 404,
         },
-        acceptFiles: 'image/*'
-      }
+        acceptFiles: 'image/*',
+      },
     }, options);
 
     return this._super(config);
-  }
+  },
 });
 
 export default View.extend({
   _defaults: {
     titleText: 'Upload Image',
-    subtitleText: ''
+    subtitleText: '',
   },
 
   mustache: template,
 
   partials: {
-    uploadIcon: uploadIcon.template
+    uploadIcon: uploadIcon.template,
   },
 
   templateData() {
@@ -92,7 +92,7 @@ export default View.extend({
 
     this._$container.css({
       width: this._model.width,
-      height: this._model.height
+      height: this._model.height,
     });
 
     this._model.hasInitialImage ?
@@ -159,9 +159,9 @@ export default View.extend({
 
         console.error(err);
         this.trigger('upload-error', err);
-      }
+      },
     });
-  }
+  },
 }, {
-  Uploader
+  Uploader,
 });
