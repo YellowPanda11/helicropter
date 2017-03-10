@@ -27,11 +27,10 @@
     "spin.js": "^2.3.1"
   },
   "devDependencies": {
-    "babel": "^5.8.23",
     "babel-core": "^6.3.17",
     "babel-loader": "^6.2.0",
-    "babel-plugin-transform-runtime": "^6.15.0",
-    "babel-preset-behance": "^1.0.0",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-behance": "^6.0.0",
     "eslint": "^3.1.1",
     "eslint-loader": "^1.4.1",
     "eslint-preset-behance": "^3.0.1",
