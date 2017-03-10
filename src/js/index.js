@@ -9,7 +9,7 @@ import RatioLock from './RatioLock';
 import SuggestionArea from './SuggestionArea';
 import PreviewCrop from './PreviewCrop';
 
-import template from 'hgn!../templates/wrapper';
+import template from 'hgn-loader!../templates/wrapper';
 
 const HelicropterView = View.extend({
   mustache: template,

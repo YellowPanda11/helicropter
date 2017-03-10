@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import View from 'beff/View';
 
-import template from 'hgn!../templates/suggesstion-area';
+import template from 'hgn-loader!../templates/suggesstion-area';
 
 const DEFAULT_MAX_SUGGESTIONS = 7;
 

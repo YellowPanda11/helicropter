@@ -1,7 +1,7 @@
 import View from 'beff/View';
 import $ from 'jquery';
-import mustache from 'hgn!../templates/preview-crop';
-import uploadIcon from 'hgn!../templates/icons/upload';
+import mustache from 'hgn-loader!../templates/preview-crop';
+import uploadIcon from 'hgn-loader!../templates/icons/upload';
 
 const proportion = 0.5;
 

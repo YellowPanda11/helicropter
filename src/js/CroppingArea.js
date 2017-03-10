@@ -4,7 +4,7 @@ import View from 'beff/View';
 import { fabric } from 'fabric';
 
 import transparencyImage from '../img/bg-cropper.gif';
-import template from 'hgn!../templates/crop-area';
+import template from 'hgn-loader!../templates/crop-area';
 
 const MAX_SCALE = 1.0;
 const MINIMUM_SCALE_DIFFERENCE = 0.01;
