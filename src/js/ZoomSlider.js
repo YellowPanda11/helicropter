@@ -1,6 +1,6 @@
 import View from 'beff/View';
 
-import template from 'hgn!../templates/zoom-slider';
+import template from 'hgn-loader!../templates/zoom-slider';
 
 const MAX_SCALE = 1.0;
 const TOTAL_STEPS = 100;

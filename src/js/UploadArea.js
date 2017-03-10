@@ -3,8 +3,8 @@ import Spinner from 'spin.js';
 import CloudUploader from 'beff/Component/CloudUploader';
 import View from 'beff/View';
 
-import template from 'hgn!../templates/upload-area';
-import uploadIcon from 'hgn!../templates/icons/upload';
+import template from 'hgn-loader!../templates/upload-area';
+import uploadIcon from 'hgn-loader!../templates/icons/upload';
 
 const SPINNER_OPTIONS = {
   lines: 40,
