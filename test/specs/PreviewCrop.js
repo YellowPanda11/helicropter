@@ -22,7 +22,7 @@ describe('PreviewCrop', function() {
       top: 0,
       left: 0,
       cropWidth: 320,
-      cropHeight: 250
+      cropHeight: 250,
     };
 
     this.previewCrop.renderImage(this.imageData).then(done);
@@ -42,7 +42,7 @@ describe('PreviewCrop', function() {
       previewCrop.trigger('scaling', {
         scale: 1,
         left: 10,
-        top: 10
+        top: 10,
       });
     }).not.toThrow();
     previewCrop.destroy();
@@ -52,7 +52,7 @@ describe('PreviewCrop', function() {
     it('renders a scaled down version', function() {
       expect(this.$canvas).toHaveCss({
         width: this.imageData.cropWidth * proportion + 'px',
-        height: this.imageData.cropHeight * proportion + 'px'
+        height: this.imageData.cropHeight * proportion + 'px',
       });
     });
   });
@@ -64,7 +64,7 @@ describe('PreviewCrop', function() {
 
       this.previewCrop.trigger('moving', {
         left: 100,
-        top: 100
+        top: 100,
       });
 
       const newLeft = parseInt(this.previewCrop._$image.css('left'), 10);
@@ -83,7 +83,7 @@ describe('PreviewCrop', function() {
       this.scaleData = {
         scale: 0.75,
         left: 100,
-        top: 100
+        top: 100,
       };
     });
 

@@ -45,7 +45,7 @@ const HelicropterView = View.extend({
     return {
       src: this._src,
       url: this._url,
-      coordinates
+      coordinates,
     };
   },
 
@@ -64,7 +64,7 @@ const HelicropterView = View.extend({
       titleText: this._model.get('uploadTitle'),
       subtitleText: this._model.get('uploadSubtitle'),
       hasInitialImage: this._model.get('initialImage'),
-      uploadImmediately: this._model.get('uploadImmediately')
+      uploadImmediately: this._model.get('uploadImmediately'),
     });
     this._uploadArea.render(this.$view.find('.js-upload-container'));
   },
@@ -79,7 +79,7 @@ const HelicropterView = View.extend({
       viewportRatio: this._model.get('viewportRatio'),
       cropRatio: this._model.get('cropRatio'),
       allowTransparency: this._model.get('allowTransparency'),
-      previewMode: this._model.get('previewMode')
+      previewMode: this._model.get('previewMode'),
     });
     this._croppingArea.render(this.$view.find('.js-crop-container'));
   },
@@ -93,7 +93,7 @@ const HelicropterView = View.extend({
     if (this._model.get('showRatioLock')) {
       this._ratioLock = new RatioLock({
         labelText: this._model.get('ratioLockText'),
-        checked: this._model.get('viewportRatio') === 'static'
+        checked: this._model.get('viewportRatio') === 'static',
       });
       this._ratioLock.render(this.$view.find('.js-crop-controls'));
     }
@@ -103,7 +103,7 @@ const HelicropterView = View.extend({
     if (this._model.get('showSuggestions')) {
       this._suggestionArea = new SuggestionArea({
         suggestions: this._model.get('suggestions'),
-        maxSuggestions: this._model.get('maxSuggestions')
+        maxSuggestions: this._model.get('maxSuggestions'),
       });
       this._suggestionArea.render(this.$view.find('.js-suggestions'));
     }
@@ -122,7 +122,7 @@ const HelicropterView = View.extend({
 
     this._previewCrop = new PreviewCrop({
       cropWidth: this._model.get('cropSize').width,
-      cropHeight: this._model.get('cropSize').height
+      cropHeight: this._model.get('cropSize').height,
     });
     this._previewCrop.render(config.element);
   },
@@ -183,7 +183,7 @@ const HelicropterView = View.extend({
         this.trigger('remove-image');
         this._showError(err);
         this.trigger('error:upload', err);
-      }
+      },
     });
 
     this.on('remove-image', () => {
@@ -247,7 +247,7 @@ const HelicropterView = View.extend({
     this._zoomSlider.disable();
 
     this.trigger('controls:disabled');
-  }
+  },
 });
 
 const Helicropter = Controller.extend({
@@ -255,19 +255,19 @@ const Helicropter = Controller.extend({
     uploaderOptions: {
       request: {
         endpoint: '',
-        accessKey: ''
+        accessKey: '',
       },
       signature: {
-        endpoint: ''
-      }
+        endpoint: '',
+      },
     },
     canvasSize: {
       width: 432,
-      height: 300
+      height: 300,
     },
     cropSize: {
       width: 320,
-      height: 250
+      height: 250,
     },
     uploadImmediately: false,
     previewMode: false,
@@ -276,7 +276,7 @@ const Helicropter = Controller.extend({
     allowTransparency: true,
     showRatioLock: false,
     showSuggestions: false,
-    suggestions: []
+    suggestions: [],
   },
 
   init(model) {
@@ -299,9 +299,9 @@ const Helicropter = Controller.extend({
 
   removeImage() {
     this._view.trigger('remove-image');
-  }
+  },
 }, {
-  VIEW_CLASS: HelicropterView
+  VIEW_CLASS: HelicropterView,
 });
 
 export default Helicropter;

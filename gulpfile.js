@@ -19,7 +19,7 @@ gulp.task('webpack', function(cb) {
       colors: true,
       version: false,
       chunks: false,
-      chunkModules: false
+      chunkModules: false,
     }));
 
     cb();

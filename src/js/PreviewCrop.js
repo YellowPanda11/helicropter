@@ -11,7 +11,7 @@ export default View.extend({
   mustache,
 
   partials: {
-    uploadIcon: uploadIcon.template
+    uploadIcon: uploadIcon.template,
   },
 
   rendered() {
@@ -24,12 +24,12 @@ export default View.extend({
 
     this._$canvas.css({
       position: 'relative',
-      overflow: 'hidden'
+      overflow: 'hidden',
     });
 
     this._$upload.add(this._$canvas).css({
       width: this._model.cropWidth * proportion,
-      height: this._model.cropHeight * proportion
+      height: this._model.cropHeight * proportion,
     });
 
     this._$upload.find('.js-upload-button').on('click', () => this.trigger('upload-image'));
@@ -63,7 +63,7 @@ export default View.extend({
     this._$canvas
     .css({
       width: cropWidth * proportion,
-      height: cropHeight * proportion
+      height: cropHeight * proportion,
     })
     .removeClass('hide')
     .empty();
@@ -92,5 +92,5 @@ export default View.extend({
     var realScale = proportion * scale;
     this._$image.css('width', this._$image[0].naturalWidth * realScale);
     this._$image.css('height', this._$image[0].naturalHeight * realScale);
-  }
+  },
 });

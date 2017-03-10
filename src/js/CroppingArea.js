@@ -19,11 +19,11 @@ export default View.extend({
     this._$canvas = this.$view.find('.js-cropper-canvas');
     this._$canvas.prop({
       width: this._model.canvasWidth,
-      height: this._model.canvasHeight
+      height: this._model.canvasHeight,
     });
 
     this._canvas = new fabric.Canvas(this._$canvas[0], {
-      selection: false
+      selection: false,
     });
 
     // IMPORTANT: Using undocumented Fabric.js API here to force retina-like behavior
@@ -97,9 +97,9 @@ export default View.extend({
         this._createStaticCropArea();
 
         this.trigger('set-crop-size', {
-          minScale: this._calculateScaleBound()
+          minScale: this._calculateScaleBound(),
         });
-      }
+      },
     });
   },
 
@@ -126,7 +126,7 @@ export default View.extend({
       y: Math.max(0, (this._getImageProp('top') * -1) + this._getCropAreaProp('top')),
       width: this._cropArea.getWidth(),
       height: this._cropArea.getHeight(),
-      scale: this._image.getScaleX()
+      scale: this._image.getScaleX(),
     };
   },
 
@@ -152,7 +152,7 @@ export default View.extend({
     .then((image) => {
       const pattern = new fabric.Pattern({
         source: image,
-        repeat: 'repeat'
+        repeat: 'repeat',
       });
 
       const patternRect = new fabric.Rect({
@@ -164,7 +164,7 @@ export default View.extend({
         selectable: false,
         evented: false,
         hasBorders: false,
-        hasControls: false
+        hasControls: false,
       });
 
       this._canvas.add(patternRect);
@@ -190,7 +190,7 @@ export default View.extend({
         originY: 'top',
         selectable: !this._model.previewMode,
         hasBorders: false,
-        hasControls: false
+        hasControls: false,
       });
 
       this._canvas.add(this._image);
@@ -228,7 +228,7 @@ export default View.extend({
         minScale: normalizedCoordinates.minScale,
         cropWidth: this._model.cropWidth,
         cropHeight: this._model.cropHeight,
-        image: this._model.image
+        image: this._model.image,
       }));
     });
   },
@@ -237,7 +237,7 @@ export default View.extend({
     return {
       left: this._image.get('left') - this._getCropAreaProp('left'),
       top: this._image.get('top') - this._getCropAreaProp('top'),
-      scale: this._image.getScaleX()
+      scale: this._image.getScaleX(),
     };
   },
 
@@ -250,7 +250,7 @@ export default View.extend({
       width: null,
       height: null,
       scale: minScale,
-      minScale
+      minScale,
     }, coordinates);
 
     if (coordinates.width === null && coordinates.height === null) {
@@ -266,7 +266,7 @@ export default View.extend({
     if (Math.abs(widthScale - heightScale) < MINIMUM_SCALE_DIFFERENCE) {
       coordinates.scale = widthScale;
       coordinates.x = coordinates.x !== null ? coordinates.x * widthScale : null;
-      coordinates.y = coordinates.y  !== null ? coordinates.y * widthScale : null;
+      coordinates.y = coordinates.y !== null ? coordinates.y * widthScale : null;
     }
     else {
       coordinates.scale = minScale;
@@ -292,22 +292,22 @@ export default View.extend({
 
     const previousDimensions = {
       width: this._image.getWidth(),
-      height: this._image.getHeight()
+      height: this._image.getHeight(),
     };
     const previousCentroid = {
       left: (this._image.get('left') * -1) + this._cropArea.get('left') + (this._cropArea.getWidth() / 2),
-      top: (this._image.get('top') * -1) + this._cropArea.get('top') + (this._cropArea.getHeight() / 2)
+      top: (this._image.get('top') * -1) + this._cropArea.get('top') + (this._cropArea.getHeight() / 2),
     };
 
     this._image.scale(scaleValue).setCoords();
 
     const postDimensions = {
       width: this._image.getWidth(),
-      height: this._image.getHeight()
+      height: this._image.getHeight(),
     };
     const postCentroid = {
       left: previousCentroid.left * (postDimensions.width / previousDimensions.width),
-      top: previousCentroid.top * (postDimensions.height / previousDimensions.height)
+      top: previousCentroid.top * (postDimensions.height / previousDimensions.height),
     };
 
     this._image.set('left', this._image.get('left') + (previousCentroid.left - postCentroid.left));
@@ -416,7 +416,7 @@ export default View.extend({
       fill: 'transparent',
       stroke: 'rgba(37, 38, 42, 1.0)',
       hasBorders: false,
-      hasControls: false
+      hasControls: false,
     });
 
     this._canvas.add(this._cropArea);
@@ -436,7 +436,7 @@ export default View.extend({
       lockRotation: true,
       hasRotatingPoint: false,
       cornerColor: 'rgba(255, 255, 255, 1.0)',
-      cornerSize: 5
+      cornerSize: 5,
     });
 
     this._canvas.add(this._cropArea);
@@ -452,12 +452,12 @@ export default View.extend({
 
       this._startingTransform = {
         x: this._image.get('left'),
-        y: this._image.get('top')
+        y: this._image.get('top'),
       };
 
       this._startingCropPosition = {
         x: this._cropArea.get('left'),
-        y: this._cropArea.get('top')
+        y: this._cropArea.get('top'),
       };
 
       this._startingPointer = this._canvas.getPointer(e);
@@ -524,12 +524,12 @@ export default View.extend({
       { left: 0, top: 0, height: topOffset, width: this._model.canvasWidth }, // Top Bar
       { left: 0, top: topOffset, height: cropHeight, width: leftOffset }, // Left Bar
       { left: this._model.canvasWidth - rightOffset, top: topOffset, height: cropHeight, width: rightOffset }, // Right Bar
-      { left: 0, top: this._model.canvasHeight - bottomOffset, height: bottomOffset, width: this._model.canvasWidth } // Bottom Bar
+      { left: 0, top: this._model.canvasHeight - bottomOffset, height: bottomOffset, width: this._model.canvasWidth }, // Bottom Bar
     ].map((box) => {
       const data = extend(box, {
         fill: 'rgba(37, 38, 42, 0.6)',
         selectable: false,
-        evented: false
+        evented: false,
       });
 
       return new fabric.Rect(data);
@@ -539,7 +539,7 @@ export default View.extend({
       originX: 'left',
       originY: 'top',
       selectable: false,
-      evented: false
+      evented: false,
     });
 
     this._canvas.add(this._cropOverlay);
@@ -562,7 +562,7 @@ export default View.extend({
       originX: 'center',
       originY: 'center',
       selectable: false,
-      evented: false
+      evented: false,
     });
 
     const warningMessage = new fabric.Text('This zoom level will blur your cover image', {
@@ -574,7 +574,7 @@ export default View.extend({
       fontWeight: 500,
       originX: 'center',
       originY: 'center',
-      textAlign: 'center'
+      textAlign: 'center',
     });
 
     this._warningBox = new fabric.Group([warningBox, warningMessage], {
@@ -585,7 +585,7 @@ export default View.extend({
       originX: 'left',
       originY: 'top',
       selectable: false,
-      evented: false
+      evented: false,
     });
 
     this._canvas.add(this._warningBox);
@@ -598,7 +598,7 @@ export default View.extend({
     this._warningBox.animate('top', this._model.canvasHeight - 40, {
       onChange: () => this._renderCanvas(),
       duration: 250,
-      easing: fabric.util.ease.easeOutQuad
+      easing: fabric.util.ease.easeOutQuad,
     });
   },
 
@@ -608,7 +608,7 @@ export default View.extend({
     this._warningBox.animate('top', this._model.canvasHeight, {
       onChange: () => this._renderCanvas(),
       duration: 250,
-      easing: fabric.util.ease.easeInQuad
+      easing: fabric.util.ease.easeInQuad,
     });
   },
 
@@ -629,5 +629,5 @@ export default View.extend({
       this._canvas.renderAll();
       this[animationRequest] = false;
     });
-  }
+  },
 });

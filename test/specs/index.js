@@ -14,20 +14,20 @@ describe('Helicropter', function() {
       uploaderOptions: {
         request: {
           endpoint: 'foo',
-          accessKey: 'foo'
+          accessKey: 'foo',
         },
         signature: {
-          endpoint: '/s3handler'
-        }
-      }
+          endpoint: '/s3handler',
+        },
+      },
     };
 
     this._createWithInitialImage = customConfig => {
       const initialImage = {
         initialImage: {
           src: '/imgs/test-kitten.jpeg',
-          url: 'https://foo.com/imgs/test-kitten.jpeg'
-        }
+          url: 'https://foo.com/imgs/test-kitten.jpeg',
+        },
       };
       const inst = new Helicropter(extend(this.defaultConfig, initialImage, customConfig));
       inst.render($('.helicropter-container'));
@@ -174,8 +174,8 @@ describe('Helicropter', function() {
     beforeEach(function() {
       this.helicropter = this._createWithInitialImage({
         previewCrop: {
-          element: $('.preview-crop-container')
-        }
+          element: $('.preview-crop-container'),
+        },
       });
     });
 

@@ -24,7 +24,7 @@ export default View.extend({
         this._scaleMin = minScale;
         this._calculateScaleStep(previousScale);
         this.trigger('scale', this._currentScale());
-      }
+      },
     });
   },
 
@@ -59,5 +59,5 @@ export default View.extend({
     }
 
     return this._scaleMin + (value * this._scaleStep);
-  }
+  },
 });

@@ -1,6 +1,6 @@
 define([
   'jquery',
-  '../src/js/index'
+  '../src/js/index',
 ], function($, Helicropter) {
   'use strict';
 
@@ -8,27 +8,27 @@ define([
     uploaderOptions: {
       request: {
         endpoint: 'foo',
-        accessKey: 'foo'
+        accessKey: 'foo',
       },
       signature: {
-        endpoint: '/s3handler'
-      }
+        endpoint: '/s3handler',
+      },
     },
     canvasSize: {
       width: 576,
-      height: 362
+      height: 362,
     },
     cropSize: {
       width: 404,
-      height: 316
+      height: 316,
     },
     displayedWidth: 500,
     previewCrop: {
-      element: $('.js-preview-crop-container')
+      element: $('.js-preview-crop-container'),
     },
     cropRatio: {
       width: 4,
-      height: 3
+      height: 3,
     },
     viewportRatio: 'static',
     allowTransparency: false,
@@ -40,8 +40,8 @@ define([
       coordinates: {
         x: 48,
         y: 65,
-        scale: 0.4105
-      }
+        scale: 0.4105,
+      },
     },
     // previewMode: true,
     uploadBackgroundImage: '/imgs/test-letters.png',
@@ -52,8 +52,8 @@ define([
       { src: '/imgs/test-image-0.png', url: 'https://foo.com/imgs/test-image-0.png' },
       { src: '/imgs/test-image-1.png', url: 'https://foo.com/imgs/test-image-1.png' },
       { src: '/imgs/test-image-2.png', url: 'https://foo.com/imgs/test-image-2.png' },
-      { src: '/imgs/test-image-3.png', url: 'https://foo.com/imgs/test-image-3.png' }
-    ]
+      { src: '/imgs/test-image-3.png', url: 'https://foo.com/imgs/test-image-3.png' },
+    ],
   });
   cropper.render($('.js-cropper'));
 
