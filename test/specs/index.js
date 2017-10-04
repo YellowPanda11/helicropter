@@ -46,14 +46,54 @@ describe('Helicropter', function() {
   });
 
   describe('#crop', function() {
+    beforeEach(function() {
+      this.helicropter = this._createWithInitialImage();
+    });
+
     describe('when cropping area does not have crop data', function() {
+      it('returns undefined', function() {
+        spyOn(this.helicropter._view._croppingArea, 'getCropData').and.returnValue(undefined);
+        expect(this.helicropter.crop()).not.toBeDefined();
+      });
+    });
+
+    describe('when cropping area has crop data', function() {
       beforeEach(function() {
         this.helicropter = this._createWithInitialImage();
       });
 
-      it('returns undefined', function() {
-        spyOn(this.helicropter._view._croppingArea, 'getCropData').and.returnValue(undefined);
-        expect(this.helicropter.crop()).not.toBeDefined();
+      it('returns crop data', function() {
+        spyOn(this.helicropter._view._croppingArea, 'getCropData').and.returnValue({
+          x: 0,
+          y: 0,
+          width: 10,
+          height: 10,
+          scale: 1,
+        });
+        spyOn(this.helicropter._view._croppingArea, 'getDimensions').and.returnValue({
+          x: 0,
+          y: 0,
+          width: 10,
+          height: 10,
+        });
+
+        expect(this.helicropter.crop()).toEqual({
+          src: '/imgs/test-kitten.jpeg',
+          url: 'https://foo.com/imgs/test-kitten.jpeg',
+          dimensions: {
+            x: 0,
+            y: 0,
+            width: 10,
+            height: 10,
+          },
+          coordinates: {
+            x: 0,
+            y: 0,
+            width: 10,
+            height: 10,
+            scale: 1,
+          },
+        });
       });
     });
   });

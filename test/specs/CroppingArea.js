@@ -45,4 +45,67 @@ describe('CroppingArea', function() {
       });
     });
   });
+
+  describe('#getDimensions', function() {
+    beforeEach(function() {
+      spyOn(this.croppingArea, '_getImageProp').and.callFake((prop) => {
+        return {
+          left: -5,
+          top: -10,
+          width: 300,
+          height: 300,
+        }[prop];
+      });
+      spyOn(this.croppingArea, '_getCropAreaProp').and.returnValue(0);
+
+      this.croppingArea._image = { getScaleX: () => 0.5 };
+    });
+
+    it('returns undefined if no image is defined', function() {
+      this.croppingArea._image = null;
+      expect(this.croppingArea.getDimensions()).not.toBeDefined();
+    });
+
+    it('returns scaled coordinates', function() {
+      this.croppingArea._cropArea = {
+        getWidth: () => 100,
+        getHeight: () => 50,
+      };
+
+      expect(this.croppingArea.getDimensions()).toEqual({
+        x: 10,
+        y: 20,
+        width: 200,
+        height: 100,
+      });
+    });
+
+    it('clamps coordinates to native width if scaled width is greater than native width', function() {
+      this.croppingArea._cropArea = {
+        getWidth: () => 400,
+        getHeight: () => 100,
+      };
+
+      expect(this.croppingArea.getDimensions()).toEqual({
+        x: 3,
+        y: 7,
+        width: 300,
+        height: 75,
+      });
+    });
+
+    it('clamps coordinates to native height if scaled height is greater than native height', function() {
+      this.croppingArea._cropArea = {
+        getWidth: () => 100,
+        getHeight: () => 400,
+      };
+
+      expect(this.croppingArea.getDimensions()).toEqual({
+        x: 3,
+        y: 7,
+        width: 75,
+        height: 300,
+      });
+    });
+  });
 });

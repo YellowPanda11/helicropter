@@ -45,6 +45,7 @@ const HelicropterView = View.extend({
     return {
       src: this._src,
       url: this._url,
+      dimensions: this._croppingArea.getDimensions(),
       coordinates,
     };
   },

@@ -10,6 +10,7 @@ module.exports = {
   name: 'demo',
   entry: demoPath + '/index.js',
   output: {
+    path: path.join(demoPath, 'public'),
     filename: 'index.js',
   },
   resolve: {

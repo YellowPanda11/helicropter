@@ -130,6 +130,36 @@ export default View.extend({
     };
   },
 
+  getDimensions() {
+    if (!this._image) { return; }
+
+    const { x, y, width, height, scale } = this.getCropData();
+    const nativeWidth = this._getImageProp('width');
+    const nativeHeight = this._getImageProp('height');
+
+    let scaledValues = {
+      x: x / scale,
+      y: y / scale,
+      width: width / scale,
+      height: height / scale,
+    };
+
+    let reductionRatio = 1;
+    if (scaledValues.width > nativeWidth) {
+      reductionRatio = nativeWidth / scaledValues.width;
+    }
+    else if (scaledValues.height > nativeHeight) {
+      reductionRatio = nativeHeight / scaledValues.height;
+    }
+
+    scaledValues.x = Math.floor(scaledValues.x * reductionRatio);
+    scaledValues.y = Math.floor(scaledValues.y * reductionRatio);
+    scaledValues.width = Math.floor(scaledValues.width * reductionRatio);
+    scaledValues.height = Math.floor(scaledValues.height * reductionRatio);
+
+    return scaledValues;
+  },
+
   _setCropSizeByAspectRatio(ratio) {
     const maxWidth = Math.round(this._model.canvasWidth - (MINIMUM_PADDING * 2));
     const maxHeight = Math.round(this._model.canvasHeight - (MINIMUM_PADDING * 2));
