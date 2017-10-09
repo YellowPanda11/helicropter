@@ -1,5 +1,5 @@
 import extend from 'nbd/util/extend';
-import View from 'beff/View';
+import View from '@behance/beff/View';
 
 import template from 'hgn-loader!../templates/ratio-lock';
 

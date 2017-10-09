@@ -1,4 +1,4 @@
-import View from 'beff/View';
+import View from '@behance/beff/View';
 
 import template from 'hgn-loader!../templates/zoom-slider';
 

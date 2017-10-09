@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import Spinner from 'spin.js';
-import CloudUploader from 'beff/Component/CloudUploader';
-import View from 'beff/View';
+import CloudUploader from '@behance/beff/Component/CloudUploader';
+import View from '@behance/beff/View';
 
 import template from 'hgn-loader!../templates/upload-area';
 import uploadIcon from 'hgn-loader!../templates/icons/upload';

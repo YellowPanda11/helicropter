@@ -16,7 +16,7 @@ module.exports = {
   resolve: {
     alias: {
       templates: __dirname + '/src/templates',
-      fineuploader: 'fine-uploader/dist',
+      fineuploader: '@behance/fine-uploader/dist',
     },
     extensions: ['.js', '.mustache', '.css', '.scss'],
     modules: [

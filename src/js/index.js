@@ -1,6 +1,6 @@
 import extend from 'nbd/util/extend';
-import Controller from 'beff/Controller';
-import View from 'beff/View';
+import Controller from '@behance/beff/Controller';
+import View from '@behance/beff/View';
 
 import UploadArea from './UploadArea';
 import CroppingArea from './CroppingArea';

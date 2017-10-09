@@ -1,4 +1,4 @@
-import View from 'beff/View';
+import View from '@behance/beff/View';
 import $ from 'jquery';
 import mustache from 'hgn-loader!../templates/preview-crop';
 import uploadIcon from 'hgn-loader!../templates/icons/upload';

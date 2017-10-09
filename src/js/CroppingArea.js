@@ -1,7 +1,7 @@
 import Promise from 'nbd/Promise';
 import extend from 'nbd/util/extend';
-import View from 'beff/View';
-import { fabric } from 'fabric';
+import View from '@behance/beff/View';
+import { fabric } from '@behance/fabric';
 
 import transparencyImage from '../img/bg-cropper.gif';
 import template from 'hgn-loader!../templates/crop-area';

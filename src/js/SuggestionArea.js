@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import View from 'beff/View';
+import View from '@behance/beff/View';
 
 import template from 'hgn-loader!../templates/suggesstion-area';
 
