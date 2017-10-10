@@ -1,4 +1,4 @@
-import extend from 'nbd/util/extend';
+import extend from '@behance/nbd/util/extend';
 import Controller from '@behance/beff/Controller';
 import View from '@behance/beff/View';
 

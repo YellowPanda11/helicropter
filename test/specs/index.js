@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import extend from 'nbd/util/extend';
 import Helicropter from 'index';
 
 describe('Helicropter', function() {
@@ -29,13 +28,13 @@ describe('Helicropter', function() {
           url: 'https://foo.com/imgs/test-kitten.jpeg',
         },
       };
-      const inst = new Helicropter(extend(this.defaultConfig, initialImage, customConfig));
+      const inst = new Helicropter(Object.assign(this.defaultConfig, initialImage, customConfig));
       inst.render($('.helicropter-container'));
       return inst;
     };
 
     this._createWithoutInitialImage = customConfig => {
-      const inst = new Helicropter(extend(this.defaultConfig, customConfig));
+      const inst = new Helicropter(Object.assign(this.defaultConfig, customConfig));
       inst.render($('.helicropter-container'));
       return inst;
     };

@@ -1,4 +1,4 @@
-import extend from 'nbd/util/extend';
+import extend from '@behance/nbd/util/extend';
 import View from '@behance/beff/View';
 
 import template from 'hgn-loader!../templates/ratio-lock';

@@ -1,5 +1,3 @@
-import Promise from 'nbd/Promise';
-import extend from 'nbd/util/extend';
 import View from '@behance/beff/View';
 import { fabric } from '@behance/fabric';
 
@@ -251,7 +249,7 @@ export default View.extend({
         this.trigger('moving', this._getImageInfo());
       });
 
-      this.trigger('image-loaded', extend(this._getImageInfo(), {
+      this.trigger('image-loaded', Object.assign(this._getImageInfo(), {
         width: this._image.get('width'),
         height: this._image.get('height'),
         scale: normalizedCoordinates.scale,
@@ -274,7 +272,7 @@ export default View.extend({
   _normalizeCoordinates(coordinates = {}) {
     const minScale = this._calculateScaleBound();
 
-    coordinates = extend({
+    coordinates = Object.assign({
       x: null,
       y: null,
       width: null,
@@ -556,7 +554,7 @@ export default View.extend({
       { left: this._model.canvasWidth - rightOffset, top: topOffset, height: cropHeight, width: rightOffset }, // Right Bar
       { left: 0, top: this._model.canvasHeight - bottomOffset, height: bottomOffset, width: this._model.canvasWidth }, // Bottom Bar
     ].map((box) => {
-      const data = extend(box, {
+      const data = Object.assign(box, {
         fill: 'rgba(37, 38, 42, 0.6)',
         selectable: false,
         evented: false,

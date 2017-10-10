@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import extend from 'nbd/util/extend';
 import UploadArea from 'UploadArea';
 import config from '../fixtures/config';
 
@@ -17,7 +16,7 @@ describe('UploadArea', function() {
     };
 
     this.create = (customOptions) => {
-      const inst = new UploadArea(extend(this.options, customOptions));
+      const inst = new UploadArea(Object.assign(this.options, customOptions));
       inst.render($('#jasmine-fixtures'));
       return inst;
     };
