@@ -148,6 +148,13 @@ describe('Helicropter', function() {
         expect($('.js-croploader-errors')).not.toBeVisible();
       });
 
+      it('handles an error the same for either the upload or crop step', function() {
+        spyOn(this.helicropter._view, '_handleUploadError');
+        this.helicropter._view._uploadArea.trigger('upload-error', {});
+        this.helicropter._view._croppingArea.trigger('upload-error', {});
+        expect(this.helicropter._view._handleUploadError).toHaveBeenCalledTimes(2);
+      });
+
       it('shows a default error message when not provided by upload-error event', function() {
         this.helicropter._view._uploadArea.trigger('upload-error', {});
         expect($('.js-croploader-errors')).toBeVisible();

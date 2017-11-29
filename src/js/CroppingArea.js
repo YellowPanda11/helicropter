@@ -258,6 +258,8 @@ export default View.extend({
         cropHeight: this._model.cropHeight,
         image: this._model.image,
       }));
+    }, (err) => {
+      this.trigger('upload-error', err);
     });
   },
 

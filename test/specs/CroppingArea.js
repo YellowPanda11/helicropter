@@ -20,6 +20,17 @@ describe('CroppingArea', function() {
     expect(this.$el.find('.js-cropper-canvas')).toExist();
   });
 
+  it('triggers an error event when the image fails to load', function(done) {
+    const croppingArea = new CroppingArea({});
+    spyOn(croppingArea, '_loadImage').and.returnValue(Promise.reject());
+    croppingArea.on('upload-error', function() {
+      croppingArea.destroy();
+      done();
+    });
+    croppingArea.render(this.$el);
+    croppingArea.trigger('set-image', { url: '', src: '' });
+  });
+
   describe('#getCropData', function() {
     it('returns undefined if no image is defined', function() {
       expect(this.croppingArea.getCropData()).not.toBeDefined();
