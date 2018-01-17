@@ -55,6 +55,26 @@ describe('CroppingArea', function() {
         scale: 1.0,
       });
     });
+
+    it('does not allow height/width less than 1', function() {
+      spyOn(this.croppingArea, '_getImageProp').and.returnValue(1);
+      spyOn(this.croppingArea, '_getCropAreaProp').and.returnValue(0);
+
+      this.croppingArea._cropArea = {
+        getWidth: () => 0,
+        getHeight: () => 0,
+      };
+
+      this.croppingArea._image = { getScaleX: () => 1.0 };
+
+      expect(this.croppingArea.getCropData()).toEqual({
+        x: 0,
+        y: 0,
+        width: 1,
+        height: 1,
+        scale: 1.0,
+      });
+    });
   });
 
   describe('#getDimensions', function() {
