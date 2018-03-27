@@ -66,7 +66,7 @@ export default View.extend({
       'set-image'(imageSrc, coordinates) {
         this._model.image = imageSrc;
         this._createImage(coordinates)
-        .catch((err) => console.error(err));
+          .catch((err) => console.error(err));
       },
 
       'ratio-locked'(ratioLocked) {
@@ -135,7 +135,7 @@ export default View.extend({
     const nativeWidth = this._getImageProp('width');
     const nativeHeight = this._getImageProp('height');
 
-    let scaledValues = {
+    const scaledValues = {
       x: x / scale,
       y: y / scale,
       width: width / scale,
@@ -177,90 +177,90 @@ export default View.extend({
 
   _createTransparencyBackground() {
     return this._loadImage(transparencyImage)
-    .then((image) => {
-      const pattern = new fabric.Pattern({
-        source: image,
-        repeat: 'repeat',
-      });
+      .then((image) => {
+        const pattern = new fabric.Pattern({
+          source: image,
+          repeat: 'repeat',
+        });
 
-      const patternRect = new fabric.Rect({
-        left: 0,
-        top: 0,
-        width: this._model.canvasWidth * 2,
-        height: this._model.canvasHeight * 2,
-        fill: pattern,
-        selectable: false,
-        evented: false,
-        hasBorders: false,
-        hasControls: false,
-      });
+        const patternRect = new fabric.Rect({
+          left: 0,
+          top: 0,
+          width: this._model.canvasWidth * 2,
+          height: this._model.canvasHeight * 2,
+          fill: pattern,
+          selectable: false,
+          evented: false,
+          hasBorders: false,
+          hasControls: false,
+        });
 
-      this._canvas.add(patternRect);
-      patternRect.sendToBack();
-      patternRect.scale(0.5).setCoords();
-      patternRect.center().setCoords();
-    });
+        this._canvas.add(patternRect);
+        patternRect.sendToBack();
+        patternRect.scale(0.5).setCoords();
+        patternRect.center().setCoords();
+      });
   },
 
   _createImage(coordinates = {}) {
     if (!this._model.image) { return Promise.resolve(); }
 
     return this._loadImage(this._model.image)
-    .then((image) => {
-      if (this._image) {
-        this._image.remove();
-      }
+      .then((image) => {
+        if (this._image) {
+          this._image.remove();
+        }
 
-      this._image = new fabric.Image(image, {
-        left: 0,
-        top: 0,
-        originX: 'left',
-        originY: 'top',
-        selectable: !this._model.previewMode,
-        hasBorders: false,
-        hasControls: false,
+        this._image = new fabric.Image(image, {
+          left: 0,
+          top: 0,
+          originX: 'left',
+          originY: 'top',
+          selectable: !this._model.previewMode,
+          hasBorders: false,
+          hasControls: false,
+        });
+
+        this._canvas.add(this._image);
+        this._image.sendToBack();
+        this._image.bringForward();
+
+        const normalizedCoordinates = this._normalizeCoordinates(coordinates);
+
+        this._image.scale(normalizedCoordinates.scale).setCoords();
+        this._image.center();
+
+        if (normalizedCoordinates.x !== null) {
+          this._image.set('left', this._getCropAreaProp('left') - normalizedCoordinates.x);
+        }
+
+        if (normalizedCoordinates.y !== null) {
+          this._image.set('top', this._getCropAreaProp('top') - normalizedCoordinates.y);
+        }
+
+        this._checkPotentialBlurriness(normalizedCoordinates.scale);
+
+        this._image.setCoords();
+        this._renderCanvas();
+
+        this._image.on('moving', () => {
+          this._checkImageBounds();
+          this._canvas.setActiveObject(this._cropArea);
+          this.trigger('moving', this._getImageInfo());
+        });
+
+        this.trigger('image-loaded', Object.assign(this._getImageInfo(), {
+          width: this._image.get('width'),
+          height: this._image.get('height'),
+          scale: normalizedCoordinates.scale,
+          minScale: normalizedCoordinates.minScale,
+          cropWidth: this._model.cropWidth,
+          cropHeight: this._model.cropHeight,
+          image: this._model.image,
+        }));
+      }, (err) => {
+        this.trigger('upload-error', err);
       });
-
-      this._canvas.add(this._image);
-      this._image.sendToBack();
-      this._image.bringForward();
-
-      const normalizedCoordinates = this._normalizeCoordinates(coordinates);
-
-      this._image.scale(normalizedCoordinates.scale).setCoords();
-      this._image.center();
-
-      if (normalizedCoordinates.x !== null) {
-        this._image.set('left', this._getCropAreaProp('left') - normalizedCoordinates.x);
-      }
-
-      if (normalizedCoordinates.y !== null) {
-        this._image.set('top', this._getCropAreaProp('top') - normalizedCoordinates.y);
-      }
-
-      this._checkPotentialBlurriness(normalizedCoordinates.scale);
-
-      this._image.setCoords();
-      this._renderCanvas();
-
-      this._image.on('moving', () => {
-        this._checkImageBounds();
-        this._canvas.setActiveObject(this._cropArea);
-        this.trigger('moving', this._getImageInfo());
-      });
-
-      this.trigger('image-loaded', Object.assign(this._getImageInfo(), {
-        width: this._image.get('width'),
-        height: this._image.get('height'),
-        scale: normalizedCoordinates.scale,
-        minScale: normalizedCoordinates.minScale,
-        cropWidth: this._model.cropWidth,
-        cropHeight: this._model.cropHeight,
-        image: this._model.image,
-      }));
-    }, (err) => {
-      this.trigger('upload-error', err);
-    });
   },
 
   _getImageInfo() {

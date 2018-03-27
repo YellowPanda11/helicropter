@@ -4,6 +4,8 @@
 
 var webpackConfig = require('./webpack.config.js');
 var reporters = ['mocha'];
+const webpackConfig = require('./webpack.config.js');
+const reporters = ['mocha'];
 
 delete webpackConfig.entry;
 delete webpackConfig.output;
