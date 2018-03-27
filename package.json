@@ -4,7 +4,7 @@
   "description": "My helicropter goes \"whosh whosh whosh\"",
   "main": "src/js/index.js",
   "scripts": {
-    "start": "gulp watch",
+    "start": "webpack --watch",
     "test": "npm run lint && NODE_ENV=test COVERAGE=true ./node_modules/karma/bin/karma start --singleRun",
     "test:dev": "./node_modules/karma/bin/karma start --reporters mocha",
     "lint": "eslint src test *.js"
@@ -36,11 +36,6 @@
     "eslint-plugin-behance": "^1.1.0",
     "eslint-preset-behance": "^6.0.0",
     "file-loader": "^0.10.1",
-    "gulp": "^3.9.0",
-    "gulp-livereload": "^3.8.0",
-    "gulp-plumber": "^1.0.1",
-    "gulp-util": "^3.0.6",
-    "gulp-watch": "^4.2.4",
     "image-webpack-loader": "^3.2.0",
     "imagemin": "^5.2.2",
     "imports-loader": "^0.7.1",

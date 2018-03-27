@@ -33,7 +33,10 @@ var path = require('path');
 var app = express();
 var clientSecretKey = process.env.CLIENT_SECRET_KEY;
 
-console.log(clientSecretKey);
+console.log('process.env.CLIENT_SECRET_KEY:', clientSecretKey);
+if (!clientSecretKey) {
+  console.log('Warning! No secret key provided. Uploading files will not work!');
+}
 
 // Set these two values to match your environment
 var expectedBucket = 'helicropter-tmp-bucket';
