@@ -2,8 +2,7 @@
 // Karma configuration
 // Generated on Fri May 16 2014 10:44:21 GMT-0400 (EDT)
 
-var webpackConfig = require('./webpack.config.js');
-var reporters = ['mocha'];
+const path = require('path');
 const webpackConfig = require('./webpack.config.js');
 const reporters = ['mocha'];
 
@@ -12,6 +11,18 @@ delete webpackConfig.output;
 
 if (process.env.COVERAGE) {
   reporters.push('coverage');
+  webpackConfig.module.rules.push({
+    test: /\.js$/,
+    use: {
+      loader: 'istanbul-instrumenter-loader',
+      options: {
+        esModules: true,
+      },
+    },
+    enforce: 'post',
+    include: path.resolve('src/js'),
+    exclude: /^(node_modules|test)\//,
+  });
 }
 
 module.exports = function(config) {
