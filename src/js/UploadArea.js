@@ -33,7 +33,7 @@ const SPINNER_OPTIONS = {
 
 const Uploader = CloudUploader.extend({
   init($uploadBtn, options) {
-    let config = {};
+    const config = {};
 
     if (!options) {
       options = $uploadBtn;

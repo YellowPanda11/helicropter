@@ -48,25 +48,25 @@ export default View.extend({
     this._prepareCanvas(cropWidth, cropHeight);
 
     return this._loadImage(image)
-    .then(() => {
-      this.on('scaling', ({ scale, left, top }) => {
-        this._scale(scale);
-        this._adjustImagePosition({ left, top });
-      });
+      .then(() => {
+        this.on('scaling', ({ scale, left, top }) => {
+          this._scale(scale);
+          this._adjustImagePosition({ left, top });
+        });
 
-      this._scale(scale);
-      this._adjustImagePosition({ top, left });
-    });
+        this._scale(scale);
+        this._adjustImagePosition({ top, left });
+      });
   },
 
   _prepareCanvas(cropWidth, cropHeight) {
     this._$canvas
-    .css({
-      width: cropWidth * proportion,
-      height: cropHeight * proportion,
-    })
-    .removeClass('hide')
-    .empty();
+      .css({
+        width: cropWidth * proportion,
+        height: cropHeight * proportion,
+      })
+      .removeClass('hide')
+      .empty();
   },
 
   _adjustImagePosition({ left, top }) {
@@ -83,13 +83,13 @@ export default View.extend({
 
       this._$image = $(image);
       this._$image
-      .css('position', 'absolute')
-      .appendTo(this._$canvas);
+        .css('position', 'absolute')
+        .appendTo(this._$canvas);
     });
   },
 
   _scale(scale) {
-    var realScale = proportion * scale;
+    const realScale = proportion * scale;
     this._$image.css('width', this._$image[0].naturalWidth * realScale);
     this._$image.css('height', this._$image[0].naturalHeight * realScale);
   },

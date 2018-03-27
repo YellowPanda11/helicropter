@@ -2,14 +2,27 @@
 // Karma configuration
 // Generated on Fri May 16 2014 10:44:21 GMT-0400 (EDT)
 
-var webpackConfig = require('./webpack.config.js');
-var reporters = ['mocha'];
+const path = require('path');
+const webpackConfig = require('./webpack.config.js');
+const reporters = ['mocha'];
 
 delete webpackConfig.entry;
 delete webpackConfig.output;
 
 if (process.env.COVERAGE) {
   reporters.push('coverage');
+  webpackConfig.module.rules.push({
+    test: /\.js$/,
+    use: {
+      loader: 'istanbul-instrumenter-loader',
+      options: {
+        esModules: true,
+      },
+    },
+    enforce: 'post',
+    include: path.resolve('src/js'),
+    exclude: /^(node_modules|test)\//,
+  });
 }
 
 module.exports = function(config) {
@@ -19,7 +32,6 @@ module.exports = function(config) {
     frameworks: ['jasmine'],
 
     files: [
-      'node_modules/babel-polyfill/dist/polyfill.js',
       './node_modules/jquery/dist/jquery.js',
       './node_modules/jasmine-jquery/lib/jasmine-jquery.js',
       './node_modules/jasmine-fixture/dist/jasmine-fixture.js',
@@ -62,7 +74,7 @@ module.exports = function(config) {
 
     autoWatch: true,
 
-    browsers: ['PhantomJS'],
+    browsers: ['ChromeHeadless'],
 
     singleRun: false,
   });

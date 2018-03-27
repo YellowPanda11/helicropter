@@ -1,10 +1,10 @@
 /* eslint-env node */
-var path = require('path');
-var Notifier = require('webpack-notifier');
-var hgn = require('hgn-loader');
+const path = require('path');
+const Notifier = require('webpack-notifier');
+const hgn = require('@behance/hgn-loader');
 hgn.prefix = 'src/templates/';
 
-var demoPath = path.join(__dirname, 'demo');
+const demoPath = path.join(__dirname, 'demo');
 
 module.exports = {
   name: 'demo',
@@ -22,6 +22,11 @@ module.exports = {
       path.join(__dirname, 'src', 'js'),
       'node_modules',
     ],
+  },
+  resolveLoader: {
+    alias: {
+      'hgn-loader': '@behance/hgn-loader',
+    },
   },
   module: {
     rules: [
@@ -46,4 +51,5 @@ module.exports = {
   plugins: [
     new Notifier({ title: 'Helicropter' }),
   ],
+  mode: 'development',
 };
