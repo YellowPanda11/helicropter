@@ -1,7 +1,7 @@
 /* eslint-env node */
 var path = require('path');
 var Notifier = require('webpack-notifier');
-var hgn = require('hgn-loader');
+var hgn = require('@behance/hgn-loader');
 hgn.prefix = 'src/templates/';
 
 var demoPath = path.join(__dirname, 'demo');
@@ -22,6 +22,11 @@ module.exports = {
       path.join(__dirname, 'src', 'js'),
       'node_modules',
     ],
+  },
+  resolveLoader: {
+    alias: {
+      'hgn-loader': '@behance/hgn-loader',
+    },
   },
   module: {
     rules: [
