@@ -110,6 +110,52 @@ describe('Helicropter', function() {
     });
   });
 
+  describe('#uploadThenRender', function() {
+    it('does not render until the image is submitted', function() {
+      this.helicropter = new Helicropter(this.defaultConfig);
+
+      expect(this.helicropter._view.$view).toBeUndefined();
+
+      this.helicropter.uploadThenRender($('.helicropter-container'));
+      this.helicropter._view._uploadArea._uploader.trigger('submit');
+
+      expect(this.helicropter._view.$view).toBeDefined();
+    });
+
+    it('emits `image:uploading` when the image is submitted', function(done) {
+      this.helicropter = new Helicropter(this.defaultConfig);
+
+      this.helicropter.uploadThenRender($('.helicropter-container'));
+      this.helicropter.on('image:uploading', done);
+
+      this.helicropter._view._uploadArea._uploader.trigger('submit');
+    });
+  });
+
+  describe('#getCroppedImage', function() {
+    it('returns cropped image', function(done) {
+      this.helicropter = this._createWithInitialImage();
+
+      const width = 1;
+      const height = 1;
+      const src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
+
+      spyOn(this.helicropter, 'crop').and.returnValue({
+        dimensions: {
+          x: 1,
+          y: 1,
+        },
+        src,
+      });
+
+      this.helicropter.getCroppedImage({ width, height }).then(result => {
+        expect(result).not.toEqual(src);
+        expect(result).toContain('data:image/png;base64');
+        done();
+      });
+    });
+  });
+
   describe('when given an initial image', function() {
     beforeEach(function() {
       this.helicropter = this._createWithInitialImage();
