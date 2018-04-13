@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import Spinner from 'spin.js';
 import CloudUploader from '@behance/beff/Component/CloudUploader';
 import View from '@behance/beff/View';
@@ -31,19 +30,22 @@ const SPINNER_OPTIONS = {
   position: 'absolute',
 };
 
-const Uploader = CloudUploader.extend({
-  init($uploadBtn, options) {
-    const config = {};
+export default View.extend({
+  _defaults: {
+    titleText: 'Upload Image',
+    subtitleText: '',
+  },
 
-    if (!options) {
-      options = $uploadBtn;
-      $uploadBtn = null;
-    }
-    else {
-      config.button = $uploadBtn;
-    }
+  mustache: template,
 
-    $.extend(config, {
+  partials: {
+    uploadIcon: uploadIcon.template,
+  },
+
+  init(...args) {
+    this._super(...args);
+
+    const config = Object.assign({
       drift: 0,
       cors: {
         expected: true,
@@ -57,22 +59,10 @@ const Uploader = CloudUploader.extend({
         },
         acceptFiles: 'image/*',
       },
-    }, options);
+    }, this._model.uploaderOptions);
 
-    return this._super(config);
-  },
-});
-
-export default View.extend({
-  _defaults: {
-    titleText: 'Upload Image',
-    subtitleText: '',
-  },
-
-  mustache: template,
-
-  partials: {
-    uploadIcon: uploadIcon.template,
+    this._uploader = new CloudUploader(config);
+    this._bind();
   },
 
   templateData() {
@@ -87,7 +77,6 @@ export default View.extend({
     this._$btnArea = this.$view.find('.js-image-upload-wrapper');
     this._$btn = this.$view.find('.js-upload-button');
 
-    this._uploader = new Uploader(this._$btn[0], this._model.uploaderOptions);
     this._spinner = new Spinner(SPINNER_OPTIONS);
 
     this._$container.css({
@@ -99,12 +88,7 @@ export default View.extend({
       this._showLoadingState() :
       this.showUploadState();
 
-    this._bindUploader();
-    this.on('upload-image', () => this.uploadImage());
-
-    if (this._model.uploadImmediately) {
-      this.uploadImage();
-    }
+    this._bindUploadButton();
   },
 
   hide() {
@@ -133,19 +117,24 @@ export default View.extend({
     return window.URL || window.webkitURL;
   },
 
-  _bindUploader() {
+  _bindUploadButton() {
+    this._$btn.on('click', () => this._uploader.choose());
+    this.on('upload-image', () => this.uploadImage());
+    this.on('image-uploading', () => this._showLoadingState());
+    this.on('image-upload-complete upload-error', () => this.showUploadState());
+    this.on('image-uploaded', () => this.hide());
+  },
+
+  _bind() {
     this.listenTo(this._uploader, {
       submit() {
-        this._showLoadingState();
-
         this.trigger('image-uploading');
       },
 
       complete({ file, uploadPath, uploadEndpoint, response }) {
-        this.showUploadState();
+        this.trigger('image-upload-complete');
 
         if (response && response.success) {
-          this.hide();
           this._url = `${uploadEndpoint}/${uploadPath}`;
 
           const src = this._URL().createObjectURL(file);
@@ -155,13 +144,9 @@ export default View.extend({
       },
 
       error(err) {
-        this.showUploadState();
-
         console.error(err);
         this.trigger('upload-error', err);
       },
     });
   },
-}, {
-  Uploader,
 });

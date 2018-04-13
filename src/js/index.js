@@ -9,13 +9,69 @@ import RatioLock from './RatioLock';
 import SuggestionArea from './SuggestionArea';
 import PreviewCrop from './PreviewCrop';
 
-import template from 'hgn-loader!../templates/wrapper';
+import mustache from 'hgn-loader!../templates/wrapper';
 
 const HelicropterView = View.extend({
-  mustache: template,
+  mustache,
+
+  init(...args) {
+    this._super(...args);
+
+    this._uploadArea = new UploadArea({
+      uploaderOptions: this._model.get('uploaderOptions'),
+      backgroundImage: this._model.get('uploadBackgroundImage'),
+      width: this._model.get('canvasSize').width,
+      height: this._model.get('canvasSize').height,
+      titleText: this._model.get('uploadTitle'),
+      subtitleText: this._model.get('uploadSubtitle'),
+      hasInitialImage: this._model.get('initialImage'),
+    });
+
+    this._croppingArea = new CroppingArea({
+      canvasWidth: this._model.get('canvasSize').width,
+      canvasHeight: this._model.get('canvasSize').height,
+      cropWidth: this._model.get('cropSize').width,
+      cropHeight: this._model.get('cropSize').height,
+      displayedWidth: this._model.get('displayedWidth'),
+      viewportRatio: this._model.get('viewportRatio'),
+      cropRatio: this._model.get('cropRatio'),
+      allowTransparency: this._model.get('allowTransparency'),
+      previewMode: this._model.get('previewMode'),
+    });
+
+    this._zoomSlider = new ZoomSlider();
+
+    if (this._model.get('showRatioLock')) {
+      this._ratioLock = new RatioLock({
+        labelText: this._model.get('ratioLockText'),
+        checked: this._model.get('viewportRatio') === 'static',
+      });
+    }
+    if (this._model.get('showSuggestions')) {
+      this._suggestionArea = new SuggestionArea({
+        suggestions: this._model.get('suggestions'),
+        maxSuggestions: this._model.get('maxSuggestions'),
+      });
+    }
+
+    const config = this._model.get('previewCrop');
+
+    if (config) {
+      if (!config.element) {
+        throw new Error('previewCrop.element must be supplied in the configuration');
+      }
+
+      this._previewCrop = new PreviewCrop({
+        cropWidth: this._model.get('cropSize').width,
+        cropHeight: this._model.get('cropSize').height,
+      });
+    }
+
+    this._bindSubsections();
+  },
 
   rendered() {
-    this._addCroppingArea();
+    this._renderCroppingArea();
 
     if (this._model.get('previewMode')) {
       if (this._model.get('initialImage')) {
@@ -25,13 +81,13 @@ const HelicropterView = View.extend({
       return;
     }
 
-    this._addUploadArea();
-    this._addZoomSlider();
-    this._addRatioLock();
-    this._addSuggestionArea();
-    this._addPreviewCrop();
+    this._renderUploadArea();
+    this._renderSuggestionArea();
 
-    this._bindSubsections();
+    this._renderZoomSlider();
+    this._renderRatioLock();
+    this._renderPreviewCrop();
+
     this._setInitialState();
   },
 
@@ -56,76 +112,34 @@ const HelicropterView = View.extend({
     this._croppingArea.trigger('update-ratio', ratio);
   },
 
-  _addUploadArea() {
-    this._uploadArea = new UploadArea({
-      uploaderOptions: this._model.get('uploaderOptions'),
-      backgroundImage: this._model.get('uploadBackgroundImage'),
-      width: this._model.get('canvasSize').width,
-      height: this._model.get('canvasSize').height,
-      titleText: this._model.get('uploadTitle'),
-      subtitleText: this._model.get('uploadSubtitle'),
-      hasInitialImage: this._model.get('initialImage'),
-      uploadImmediately: this._model.get('uploadImmediately'),
-    });
+  _renderUploadArea() {
     this._uploadArea.render(this.$view.find('.js-upload-container'));
   },
 
-  _addCroppingArea() {
-    this._croppingArea = new CroppingArea({
-      canvasWidth: this._model.get('canvasSize').width,
-      canvasHeight: this._model.get('canvasSize').height,
-      cropWidth: this._model.get('cropSize').width,
-      cropHeight: this._model.get('cropSize').height,
-      displayedWidth: this._model.get('displayedWidth'),
-      viewportRatio: this._model.get('viewportRatio'),
-      cropRatio: this._model.get('cropRatio'),
-      allowTransparency: this._model.get('allowTransparency'),
-      previewMode: this._model.get('previewMode'),
-    });
+  _renderCroppingArea() {
     this._croppingArea.render(this.$view.find('.js-crop-container'));
   },
 
-  _addZoomSlider() {
-    this._zoomSlider = new ZoomSlider();
+  _renderZoomSlider() {
     this._zoomSlider.render(this.$view.find('.js-crop-controls'));
   },
 
-  _addRatioLock() {
+  _renderRatioLock() {
     if (this._model.get('showRatioLock')) {
-      this._ratioLock = new RatioLock({
-        labelText: this._model.get('ratioLockText'),
-        checked: this._model.get('viewportRatio') === 'static',
-      });
       this._ratioLock.render(this.$view.find('.js-crop-controls'));
     }
   },
 
-  _addSuggestionArea() {
+  _renderSuggestionArea() {
     if (this._model.get('showSuggestions')) {
-      this._suggestionArea = new SuggestionArea({
-        suggestions: this._model.get('suggestions'),
-        maxSuggestions: this._model.get('maxSuggestions'),
-      });
       this._suggestionArea.render(this.$view.find('.js-suggestions'));
     }
   },
 
-  _addPreviewCrop() {
-    const config = this._model.get('previewCrop');
-
-    if (!config) {
-      return;
+  _renderPreviewCrop() {
+    if (this._previewCrop) {
+      this._previewCrop.render(this._model.get('previewCrop').element);
     }
-
-    if (!config.element) {
-      throw new Error('previewCrop.element must be supplied in the configuration');
-    }
-
-    this._previewCrop = new PreviewCrop({
-      cropWidth: this._model.get('cropSize').width,
-      cropHeight: this._model.get('cropSize').height,
-    });
-    this._previewCrop.render(config.element);
   },
 
   _setInitialState() {
@@ -280,7 +294,6 @@ const Helicropter = Controller.extend({
       width: 320,
       height: 250,
     },
-    uploadImmediately: false,
     previewMode: false,
     viewportRatio: 'static',
     ratioLockText: 'Enable aspect ratio for cover image resize',
@@ -298,6 +311,55 @@ const Helicropter = Controller.extend({
 
   crop() {
     return this._view.getCropData();
+  },
+
+  getCroppedImage({ width, height }) {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+
+    const ctx = canvas.getContext('2d');
+    const cropData = this.crop();
+
+    const image = new Image;
+
+    return new Promise((resolve, reject) => {
+      image.onload = () => {
+        ctx.drawImage(
+          image,
+          cropData.dimensions.x,
+          cropData.dimensions.y,
+          width,
+          height,
+          0,
+          0,
+          width,
+          height,
+        );
+
+        resolve(canvas.toDataURL('image/png'));
+      };
+
+      image.onerror = () => reject();
+
+      image.src = cropData.src;
+    });
+  },
+
+  uploadThenRender($context) {
+    if (this._view.$view) {
+      return;
+    }
+
+    this._view.stopListening(this._view._uploadArea, 'image-uploading');
+    this._view.listenOnce(this._view._uploadArea, {
+      'image-uploading'() {
+        this.trigger('image:uploading');
+        this.render($context);
+      },
+    });
+
+    this.uploadImage();
   },
 
   changeAspectRatio(ratio) {

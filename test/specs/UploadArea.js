@@ -66,26 +66,6 @@ describe('UploadArea', function() {
     expect($('.js-image-upload-subtext')).toHaveText('foobar');
   });
 
-  describe('uploadImmediately option', function() {
-    beforeEach(function() {
-      spyOn(UploadArea.Uploader.prototype, 'choose');
-    });
-
-    it('allows uploading immediately', function() {
-      this.uploadArea = this.create({
-        uploadImmediately: true,
-      });
-
-      expect(UploadArea.Uploader.prototype.choose).toHaveBeenCalled();
-    });
-
-    it('doesnt upload immediately by default', function() {
-      this.uploadArea = this.create();
-
-      expect(UploadArea.Uploader.prototype.choose).not.toHaveBeenCalled();
-    });
-  });
-
   describe('upload completion', function() {
     it('creates a blob URL for the uploaded image', function(done) {
       this.uploadArea = this.create();
