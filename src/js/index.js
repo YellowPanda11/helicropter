@@ -212,7 +212,7 @@ const HelicropterView = View.extend({
     });
 
     this.on('remove-image', () => {
-      this._uploadArea.showUploadState();
+      this._uploadArea.trigger('image-upload-complete');
       this._disableImageManipulation();
     });
 
@@ -351,6 +351,7 @@ const Helicropter = Controller.extend({
       return;
     }
 
+    this._view._uploadArea._model.isUploadButtonHidden = true;
     this._view.stopListening(this._view._uploadArea, 'image-uploading');
     this._view.listenOnce(this._view._uploadArea, {
       'image-uploading'() {

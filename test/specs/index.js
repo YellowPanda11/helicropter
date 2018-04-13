@@ -130,6 +130,18 @@ describe('Helicropter', function() {
 
       this.helicropter._view._uploadArea._uploader.trigger('submit');
     });
+
+    it('does not render the upload button for uploadArea', function(done) {
+      this.helicropter = new Helicropter(this.defaultConfig);
+
+      this.helicropter.uploadThenRender($('.helicropter-container'));
+      this.helicropter.on('image:uploading', () => {
+        expect($('.js-upload-container .js-upload-button')).not.toExist();
+        done();
+      });
+
+      this.helicropter._view._uploadArea._uploader.trigger('submit');
+    });
   });
 
   describe('#getCroppedImage', function() {
