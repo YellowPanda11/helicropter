@@ -25,6 +25,7 @@ const HelicropterView = View.extend({
       titleText: this._model.get('uploadTitle'),
       subtitleText: this._model.get('uploadSubtitle'),
       hasInitialImage: this._model.get('initialImage'),
+      loaderStyle: this._model.get('loaderStyle'),
     });
 
     this._croppingArea = new CroppingArea({

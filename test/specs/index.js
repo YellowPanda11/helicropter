@@ -111,13 +111,19 @@ describe('Helicropter', function() {
   });
 
   describe('#uploadThenRender', function() {
+    beforeEach(function() {
+      this.file = new File(['foo'], '', {
+        type: 'image/png',
+      });
+    });
+
     it('does not render until the image is submitted', function() {
       this.helicropter = new Helicropter(this.defaultConfig);
 
       expect(this.helicropter._view.$view).toBeUndefined();
 
       this.helicropter.uploadThenRender($('.helicropter-container'));
-      this.helicropter._view._uploadArea._uploader.trigger('submit');
+      this.helicropter._view._uploadArea._uploader.trigger('submit', { file: this.file });
 
       expect(this.helicropter._view.$view).toBeDefined();
     });
@@ -128,7 +134,7 @@ describe('Helicropter', function() {
       this.helicropter.uploadThenRender($('.helicropter-container'));
       this.helicropter.on('image:uploading', done);
 
-      this.helicropter._view._uploadArea._uploader.trigger('submit');
+      this.helicropter._view._uploadArea._uploader.trigger('submit', { file: this.file });
     });
 
     it('does not render the upload button for uploadArea', function(done) {
@@ -140,7 +146,7 @@ describe('Helicropter', function() {
         done();
       });
 
-      this.helicropter._view._uploadArea._uploader.trigger('submit');
+      this.helicropter._view._uploadArea._uploader.trigger('submit', { file: this.file });
     });
   });
 

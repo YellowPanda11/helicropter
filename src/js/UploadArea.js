@@ -76,8 +76,8 @@ export default View.extend({
     this._$container = this.$view.parent();
     this._$btnArea = this.$view.find('.js-image-upload-wrapper');
     this._$btn = this.$view.find('.js-upload-button');
-
-    this._spinner = new Spinner(SPINNER_OPTIONS);
+    this._$progressBar = this.$view.find('.js-progress-bar');
+    this._$progress = this.$view.find('.js-progress');
 
     this._$container.css({
       width: this._model.width,
@@ -85,6 +85,7 @@ export default View.extend({
     });
 
     this._bindUploadButton();
+    this._bindLoaderStyle(this._model.loaderStyle)();
 
     if (this._model.hasInitialImage) {
       return this.trigger('show-loading-state');
@@ -99,14 +100,6 @@ export default View.extend({
 
   show() {
     this._$container.removeClass('hide');
-  },
-
-  _showUploadState() {
-    this._spinner.stop();
-  },
-
-  _showLoadingState() {
-    this._spinner.spin(this._$btnArea[0]);
   },
 
   uploadImage() {
@@ -125,15 +118,58 @@ export default View.extend({
     }
 
     this.on('upload-image', () => this.uploadImage());
-    this.on('image-uploading show-loading-state', () => this._showLoadingState());
-    this.on('image-upload-complete upload-error show-upload-state', () => this._showUploadState());
     this.on('image-uploaded', () => this.hide());
+  },
+
+  _bindLoaderStyle(type = 'spinner') {
+    const types = {
+      spinner: () => this._bindSpinner(),
+      progressbar: () => this._bindProgressBar(),
+    };
+
+    if (!types[type]) {
+      throw new Error(`loaderStyle must be 1 of ${Object.keys(types).toString()}`);
+    }
+
+    return types[type];
+  },
+
+  _bindSpinner() {
+    this._$progressBar.hide();
+
+    this.spinner = new Spinner(SPINNER_OPTIONS);
+    const btnArea = this.$view.find('.js-image-upload-wrapper');
+
+    this.on('image-uploading show-loading-state', () => this.spinner.spin(btnArea[0]));
+    this.on('image-upload-complete upload-error show-upload-state', () => this.spinner.stop());
+  },
+
+  _bindProgressBar() {
+    this._$progressBar.show();
+
+    if (!this._$progressBar) {
+      throw new Error('There is no instance of progress bar');
+    }
+
+    this.on('image-progress', ({ loaded, total }) => this._updateProgressBar({ loaded, total }));
+  },
+
+  _updateProgressBar({ loaded, total }) {
+    const perc = loaded / total * 100;
+
+    this._$progress.css('width', `${perc}%`);
   },
 
   _bind() {
     this.listenTo(this._uploader, {
-      submit() {
+      submit({ file }) {
+        this._model.backgroundImage = this._URL().createObjectURL(file);
+
         this.trigger('image-uploading');
+      },
+
+      progress({ loaded, total }) {
+        this.trigger('image-progress', { loaded, total });
       },
 
       complete({ file, uploadPath, uploadEndpoint, response }) {

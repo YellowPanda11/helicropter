@@ -66,6 +66,62 @@ describe('UploadArea', function() {
     expect($('.js-image-upload-subtext')).toHaveText('foobar');
   });
 
+  describe('loaderStyle', function() {
+    describe('progressbar', function() {
+      beforeEach(function() {
+        this.uploadArea = this.create({
+          loaderStyle: 'progressbar',
+        });
+      });
+
+      it('displays .js-progress-bar when it is progressbar', function() {
+        expect($('.js-progress-bar')).toExist();
+      });
+
+      it('updates the value as it loads the image', function() {
+        this.uploadArea._uploader.trigger('progress', { loaded: 1, total: 2 });
+        expect($('.js-progress').attr('style')).toEqual('width: 50%;');
+        this.uploadArea._uploader.trigger('progress', { loaded: 2, total: 2 });
+        expect($('.js-progress').attr('style')).toEqual('width: 100%;');
+      });
+    });
+
+    describe('spinner', function() {
+      beforeEach(function() {
+        this.uploadArea = this.create();
+
+        this.file = new File(['foo'], '', {
+          type: 'image/png',
+        });
+
+        spyOn(this.uploadArea.spinner, 'spin');
+        spyOn(this.uploadArea.spinner, 'stop');
+      });
+
+      it('hides .js-progress-bar when it is progressbar', function() {
+        expect($('.js-progress-bar')).not.toBeVisible();
+      });
+
+      it('displays the spinner when it is uploading the image', function() {
+        this.uploadArea._uploader.trigger('submit', { file: this.file });
+
+        expect(this.uploadArea.spinner.spin).toHaveBeenCalled();
+      });
+
+      it('stops the spinner when it is done uploading the image', function() {
+        this.uploadArea._uploader.trigger('complete', { file: this.file });
+
+        expect(this.uploadArea.spinner.stop).toHaveBeenCalled();
+      });
+
+      it('stops the spinner when the upload causes an error', function() {
+        this.uploadArea._uploader.trigger('error', 'foo');
+
+        expect(this.uploadArea.spinner.stop).toHaveBeenCalled();
+      });
+    });
+  });
+
   describe('isUploadButtonHidden', function() {
     it('hides .js-upload-button when it is true', function() {
       this.uploadArea = this.create({
