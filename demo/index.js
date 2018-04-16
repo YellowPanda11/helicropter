@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import Helicropter from '../src/js/index';
 
-var cropper = new Helicropter({
+const cropper = new Helicropter({
   uploaderOptions: {
     request: {
       endpoint: 'foo',

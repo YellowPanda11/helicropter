@@ -84,11 +84,13 @@ export default View.extend({
       height: this._model.height,
     });
 
-    this._model.hasInitialImage ?
-      this._showLoadingState() :
-      this.showUploadState();
-
     this._bindUploadButton();
+
+    if (this._model.hasInitialImage) {
+      return this.trigger('show-loading-state');
+    }
+
+    this.trigger('show-upload-state');
   },
 
   hide() {
@@ -99,13 +101,11 @@ export default View.extend({
     this._$container.removeClass('hide');
   },
 
-  showUploadState() {
+  _showUploadState() {
     this._spinner.stop();
-    this._$btn.removeClass('hide');
   },
 
   _showLoadingState() {
-    this._$btn.addClass('hide');
     this._spinner.spin(this._$btnArea[0]);
   },
 
@@ -118,10 +118,15 @@ export default View.extend({
   },
 
   _bindUploadButton() {
-    this._$btn.on('click', () => this._uploader.choose());
+    if (!this._model.isUploadButtonHidden) {
+      this._$btn.on('click', () => this._uploader.choose());
+      this.on('image-uploading show-loading-state', () => this._$btn.addClass('hide'));
+      this.on('image-upload-complete upload-error show-upload-state', () => this._$btn.removeClass('hide'));
+    }
+
     this.on('upload-image', () => this.uploadImage());
-    this.on('image-uploading', () => this._showLoadingState());
-    this.on('image-upload-complete upload-error', () => this.showUploadState());
+    this.on('image-uploading show-loading-state', () => this._showLoadingState());
+    this.on('image-upload-complete upload-error show-upload-state', () => this._showUploadState());
     this.on('image-uploaded', () => this.hide());
   },
 

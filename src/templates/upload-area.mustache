@@ -1,8 +1,9 @@
-<div class="upload-container-wrapper">
+<div class="js-upload-container upload-container-wrapper">
   {{#backgroundImage}}
   <img class="upload-background-image" src="{{backgroundImage}}"/>
   {{/backgroundImage}}
   <div class="js-image-upload-wrapper image-upload-wrapper">
+    {{^isUploadButtonHidden}}
     <div class="js-upload-button image-upload">
       {{<uploadIcon}}
         {{$classes}}upload-icon--large{{/classes}}
@@ -14,5 +15,6 @@
       <div class="image-upload-subtext js-image-upload-subtext">{{subtitleText}}</div>
       {{/subtitleText}}
     </div>
+    {{/isUploadButtonHidden}}
   </div>
 </div>

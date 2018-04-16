@@ -66,6 +66,44 @@ describe('UploadArea', function() {
     expect($('.js-image-upload-subtext')).toHaveText('foobar');
   });
 
+  describe('isUploadButtonHidden', function() {
+    it('hides .js-upload-button when it is true', function() {
+      this.uploadArea = this.create({
+        isUploadButtonHidden: true,
+      });
+
+      expect($('.js-upload-button')).not.toExist();
+    });
+
+    it('renders .js-upload-button when it is false', function() {
+      this.uploadArea = this.create({
+        isUploadButtonHidden: false,
+      });
+
+      expect($('.js-upload-button')).toExist();
+    });
+  });
+
+  describe('hasInitialImage', function() {
+    it('adds "hide" class to ._$btn when it is set and :isUploadButtonHidden is false', function() {
+      this.uploadArea = this.create({
+        isUploadButtonHidden: false,
+        hasInitialImage: true,
+      });
+
+      expect(this.uploadArea._$btn).toHaveClass('hide');
+    });
+
+    it('should not add "hide" class to ._$btn when it is set and :isUploadButtonHidden is false', function() {
+      this.uploadArea = this.create({
+        isUploadButtonHidden: false,
+        hasInitialImage: false,
+      });
+
+      expect(this.uploadArea._$btn).not.toHaveClass('hide');
+    });
+  });
+
   describe('upload completion', function() {
     it('creates a blob URL for the uploaded image', function(done) {
       this.uploadArea = this.create();
