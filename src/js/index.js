@@ -307,6 +307,9 @@ const Helicropter = Controller.extend({
   init(model) {
     this._super(extend({}, this._defaults, model));
 
+    this._canvas = document.createElement('canvas');
+    this._ctx = this._canvas.getContext('2d');
+
     this.relay(this._view, 'controls:enabled controls:disabled image:uploading image:uploaded image:loaded error:upload');
   },
 
@@ -315,30 +318,27 @@ const Helicropter = Controller.extend({
   },
 
   getCroppedImage({ width, height }) {
-    const canvas = document.createElement('canvas');
-    canvas.width = width;
-    canvas.height = height;
+    this._canvas.width = width;
+    this._canvas.height = height;
 
-    const ctx = canvas.getContext('2d');
     const cropData = this.crop();
-
     const image = new Image;
 
     return new Promise((resolve, reject) => {
       image.onload = () => {
-        ctx.drawImage(
+        this._ctx.drawImage(
           image,
           cropData.dimensions.x,
           cropData.dimensions.y,
-          width,
-          height,
+          cropData.dimensions.width,
+          cropData.dimensions.height,
           0,
           0,
           width,
           height,
         );
 
-        resolve(canvas.toDataURL('image/png'));
+        resolve(this._canvas.toDataURL('image/png'));
       };
 
       image.onerror = () => reject();
