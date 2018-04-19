@@ -154,19 +154,36 @@ describe('Helicropter', function() {
     it('returns cropped image', function(done) {
       this.helicropter = this._createWithInitialImage();
 
+      const x = 1;
+      const y = 1;
       const width = 1;
       const height = 1;
+      const scaledWidth = 5;
+      const scaledHeight = 10;
       const src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
+      const image = new Image;
+      image.src = src;
+
+      const expectedArg = [x, y, scaledWidth, scaledHeight, 0, 0, width, height];
 
       spyOn(this.helicropter, 'crop').and.returnValue({
         dimensions: {
-          x: 1,
-          y: 1,
+          x,
+          y,
+          width: scaledWidth,
+          height: scaledHeight,
         },
         src,
       });
 
+      spyOn(this.helicropter._ctx, 'drawImage');
+
       this.helicropter.getCroppedImage({ width, height }).then(result => {
+        const args = this.helicropter._ctx.drawImage.calls.allArgs()[0].slice(1);
+        const imageArg = this.helicropter._ctx.drawImage.calls.allArgs()[0][0];
+
+        expect(args).toEqual(expectedArg);
+        expect(imageArg.src).toEqual(image.src);
         expect(result).not.toEqual(src);
         expect(result).toContain('data:image/png;base64');
         done();
