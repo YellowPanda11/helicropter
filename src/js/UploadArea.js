@@ -1,6 +1,7 @@
 import Spinner from 'spin.js';
 import CloudUploader from '@behance/beff/Component/CloudUploader';
 import View from '@behance/beff/View';
+import merge from 'lodash.merge';
 
 import template from 'hgn-loader!../templates/upload-area';
 import uploadIcon from 'hgn-loader!../templates/icons/upload';
@@ -45,7 +46,7 @@ export default View.extend({
   init(...args) {
     this._super(...args);
 
-    const config = Object.assign({
+    const config = merge({
       drift: 0,
       cors: {
         expected: true,

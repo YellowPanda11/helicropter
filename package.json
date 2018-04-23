@@ -24,6 +24,7 @@
     "@behance/fabric": "1.6.1-nodeless-tiny",
     "@behance/nbd": "^1.1.8",
     "jquery": "^2.1.4",
+    "lodash.merge": "^4.6.0",
     "spin.js": "^2.3.1"
   },
   "devDependencies": {
