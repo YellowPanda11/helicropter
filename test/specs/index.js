@@ -138,6 +138,15 @@ describe('Helicropter', function() {
       this.helicropter._view._uploadArea._uploader.trigger('submit', { file: this.file });
     });
 
+    it('emits `error:upload` when there is an error', function(done) {
+      this.helicropter = new Helicropter(this.defaultConfig);
+
+      this.helicropter.on('error:upload', done);
+
+      this.helicropter.uploadThenRender($('.helicropter-container'));
+      this.helicropter._view._uploadArea._uploader.trigger('error');
+    });
+
     it('does not render the upload button for uploadArea', function(done) {
       this.helicropter = new Helicropter(this.defaultConfig);
 

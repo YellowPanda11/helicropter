@@ -347,10 +347,18 @@ const Helicropter = Controller.extend({
 
     this._view._uploadArea._model.isUploadButtonHidden = true;
     this._view.stopListening(this._view._uploadArea, 'image-uploading');
+    this._view.stopListening(this._view._uploadArea, 'upload-error');
+
     this._view.listenOnce(this._view._uploadArea, {
       'image-uploading'() {
         this.trigger('image:uploading');
         this.render($context);
+      },
+    });
+
+    this._view.listenTo(this._view._uploadArea, {
+      'upload-error'(err) {
+        this.trigger('error:upload', err);
       },
     });
 
