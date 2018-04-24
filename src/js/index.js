@@ -1,6 +1,7 @@
 import extend from '@behance/nbd/util/extend';
 import Controller from '@behance/beff/Controller';
 import View from '@behance/beff/View';
+import BeffImage from '@behance/beff/dom/Image';
 
 import UploadArea from './UploadArea';
 import CroppingArea from './CroppingArea';
@@ -306,10 +307,6 @@ const Helicropter = Controller.extend({
 
   init(model) {
     this._super(extend({}, this._defaults, model));
-
-    this._canvas = document.createElement('canvas');
-    this._ctx = this._canvas.getContext('2d');
-
     this.relay(this._view, 'controls:enabled controls:disabled image:uploading image:uploaded image:loaded error:upload');
   },
 
@@ -318,32 +315,27 @@ const Helicropter = Controller.extend({
   },
 
   getCroppedImage({ width, height }) {
-    this._canvas.width = width;
-    this._canvas.height = height;
+    const { dimensions, src } = this.crop();
 
-    const cropData = this.crop();
-    const image = new Image;
+    return BeffImage.load(src).then(beffImage => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
 
-    return new Promise((resolve, reject) => {
-      image.onload = () => {
-        this._ctx.drawImage(
-          image,
-          cropData.dimensions.x,
-          cropData.dimensions.y,
-          cropData.dimensions.width,
-          cropData.dimensions.height,
-          0,
-          0,
-          width,
-          height,
-        );
+      canvas.width = width;
+      canvas.height = height;
+      ctx.drawImage(
+        beffImage.image,
+        dimensions.x,
+        dimensions.y,
+        dimensions.width,
+        dimensions.height,
+        0,
+        0,
+        width,
+        height,
+      );
 
-        resolve(this._canvas.toDataURL('image/png'));
-      };
-
-      image.onerror = () => reject();
-
-      image.src = cropData.src;
+      return canvas.toDataURL('image/png');
     });
   },
 
