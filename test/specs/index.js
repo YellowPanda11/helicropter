@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import Helicropter from 'index';
+import images from '../fixtures/images';
 
 describe('Helicropter', function() {
   beforeEach(function() {
@@ -156,15 +157,11 @@ describe('Helicropter', function() {
 
       const x = 1;
       const y = 1;
-      const width = 1;
-      const height = 1;
-      const scaledWidth = 5;
-      const scaledHeight = 10;
-      const src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
-      const image = new Image;
-      image.src = src;
-
-      const expectedArg = [x, y, scaledWidth, scaledHeight, 0, 0, width, height];
+      const width = 50;
+      const height = 50;
+      const scaledWidth = 500;
+      const scaledHeight = 500;
+      const src = images.flower;
 
       spyOn(this.helicropter, 'crop').and.returnValue({
         dimensions: {
@@ -176,18 +173,10 @@ describe('Helicropter', function() {
         src,
       });
 
-      spyOn(this.helicropter._ctx, 'drawImage');
-
       this.helicropter.getCroppedImage({ width, height }).then(result => {
-        const args = this.helicropter._ctx.drawImage.calls.allArgs()[0].slice(1);
-        const imageArg = this.helicropter._ctx.drawImage.calls.allArgs()[0][0];
-
-        expect(args).toEqual(expectedArg);
-        expect(imageArg.src).toEqual(image.src);
-        expect(result).not.toEqual(src);
-        expect(result).toContain('data:image/png;base64');
+        expect(result).toEqual(images.flower50by50);
         done();
-      });
+      }, done.fail);
     });
   });
 
