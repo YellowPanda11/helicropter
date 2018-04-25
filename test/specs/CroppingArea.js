@@ -31,6 +31,27 @@ describe('CroppingArea', function() {
     croppingArea.trigger('set-image', { url: '', src: '' });
   });
 
+  it('shows the default blurry warning test if it is not set', function() {
+    this.croppingArea = createCroppingArea(this.$el, {
+      viewportRatio: 'static',
+      displayedWidth: 100,
+    });
+
+    expect(this.croppingArea._warningBox.item(1).text).toEqual('This zoom level will blur your cover image');
+  });
+
+  it('overrides the default blurry warning test if it is set', function() {
+    const blurryImageWarningText = 'image will get blurry';
+
+    this.croppingArea = createCroppingArea(this.$el, {
+      viewportRatio: 'static',
+      displayedWidth: 100,
+      blurryImageWarningText,
+    });
+
+    expect(this.croppingArea._warningBox.item(1).text).toEqual(blurryImageWarningText);
+  });
+
   describe('#getCropData', function() {
     it('returns undefined if no image is defined', function() {
       expect(this.croppingArea.getCropData()).not.toBeDefined();
