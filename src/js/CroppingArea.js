@@ -584,6 +584,7 @@ export default View.extend({
 
   _createBlurryWarning() {
     if (!this._model.displayedWidth) { return; }
+    const warningText = this._model.blurryImageWarningText || 'This zoom level will blur your cover image';
 
     const warningBox = new fabric.Rect({
       height: 40,
@@ -595,7 +596,7 @@ export default View.extend({
       evented: false,
     });
 
-    const warningMessage = new fabric.Text('This zoom level will blur your cover image', {
+    const warningMessage = new fabric.Text(warningText, {
       height: 40,
       width: this._model.canvasWidth,
       fill: 'rgba(255, 255, 255, 1.0)',

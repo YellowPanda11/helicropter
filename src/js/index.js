@@ -39,6 +39,7 @@ const HelicropterView = View.extend({
       cropRatio: this._model.get('cropRatio'),
       allowTransparency: this._model.get('allowTransparency'),
       previewMode: this._model.get('previewMode'),
+      blurryImageWarningText: this._model.get('blurryImageWarningText'),
     });
 
     this._zoomSlider = new ZoomSlider();
