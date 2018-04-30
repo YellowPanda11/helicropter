@@ -184,4 +184,14 @@ describe('UploadArea', function() {
       });
     });
   });
+
+  describe('cancel', function() {
+    it('emits "image-upload-cancel" when _uploader emits cancel', function(done) {
+      this.uploadArea = this.create();
+
+      this.uploadArea.on('image-upload-cancel', done);
+
+      this.uploadArea._uploader.trigger('cancel');
+    });
+  });
 });

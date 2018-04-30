@@ -188,6 +188,10 @@ export default View.extend({
         console.error(err);
         this.trigger('upload-error', err);
       },
+
+      cancel() {
+        this.trigger('image-upload-cancel');
+      },
     });
   },
 });

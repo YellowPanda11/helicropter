@@ -199,6 +199,10 @@ const HelicropterView = View.extend({
         this._hideError();
       },
 
+      'image-upload-cancel'() {
+        this.trigger('image:cancelled');
+      },
+
       'image-uploaded'({ src, url }) {
         this._enableImageManipulation();
 
@@ -308,7 +312,7 @@ const Helicropter = Controller.extend({
 
   init(model) {
     this._super(extend({}, this._defaults, model));
-    this.relay(this._view, 'controls:enabled controls:disabled image:uploading image:uploaded image:loaded error:upload');
+    this.relay(this._view, 'controls:enabled controls:disabled image:uploading image:uploaded image:loaded error:upload image:cancelled');
   },
 
   crop() {
