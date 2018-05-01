@@ -158,6 +158,15 @@ describe('Helicropter', function() {
 
       this.helicropter._view._uploadArea._uploader.trigger('submit', { file: this.file });
     });
+
+    it('emits `image:cancelled` when the upload is cancelled', function(done) {
+      this.helicropter = new Helicropter(this.defaultConfig);
+
+      this.helicropter.on('image:cancelled', done);
+
+      this.helicropter.uploadThenRender($('.helicropter-container'));
+      this.helicropter._view._uploadArea._uploader.trigger('cancel');
+    });
   });
 
   describe('#getCroppedImage', function() {
