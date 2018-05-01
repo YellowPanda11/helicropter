@@ -344,11 +344,7 @@ const Helicropter = Controller.extend({
     });
   },
 
-  uploadThenRender($context) {
-    if (this._view.$view) {
-      return;
-    }
-
+  replaceEvents($context) {
     this._view._uploadArea._model.isUploadButtonHidden = true;
     this._view.stopListening(this._view._uploadArea, 'image-uploading');
     this._view.stopListening(this._view._uploadArea, 'upload-error');
@@ -365,8 +361,26 @@ const Helicropter = Controller.extend({
         this.trigger('error:upload', err);
       },
     });
+  },
 
-    this.uploadImage();
+  uploadThenRender($context) {
+    if (this._view.$view) {
+      return;
+    }
+
+    this.replaceEvents($context);
+
+    return this.uploadImage();
+  },
+
+  dropFileThenRender($dropContext, $context) {
+    if (this._view.$view) {
+      return;
+    }
+
+    this.replaceEvents($context);
+
+    return this._view._uploadArea.setDropElement($dropContext);
   },
 
   changeAspectRatio(ratio) {
