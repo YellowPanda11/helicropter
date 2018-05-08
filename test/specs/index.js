@@ -348,4 +348,103 @@ describe('Helicropter', function() {
       expect($('.js-upload-container .js-upload-button')).toBeVisible();
     });
   });
+
+  describe('when a user resizes the browser', function() {
+    beforeEach(function() {
+      this.initialWindowHeight = 600;
+      window.innerHeight = this.initialWindowHeight;
+
+      this.waitAFrame = function() {
+        return new Promise(resolve => requestAnimationFrame(() => resolve()));
+      };
+
+      this.resizeWindowHeightTo = (value) => {
+        window.innerHeight = value;
+        window.dispatchEvent(new Event('resize'));
+      };
+    });
+
+    it('resizes cropper to the scaled value', function(done) {
+      this.helicropter = this._createWithoutInitialImage({
+        resize: {
+          offset: 0,
+        },
+      });
+
+      this.helicropter.render($('#jasmine-fixtures'));
+      this.helicropter._view._croppingArea.trigger('cropper-set-image');
+
+      const $cropper = this.helicropter._view._croppingArea.$canvasContainer;
+      const oldHeight = $cropper.height();
+
+      const scale = .5;
+      const expectedHeight = oldHeight * scale;
+
+      this.helicropter._view.on('scale-view', () => {
+        this.waitAFrame().then(() => {
+          const height = $cropper.height();
+
+          expect(height).toEqual(expectedHeight);
+          done();
+        });
+      });
+
+      this.resizeWindowHeightTo(this.initialWindowHeight * scale);
+    });
+
+    it('starts resizing when window height is reaching edges of boundEl height', function(done) {
+      $('#jasmine-fixtures').append('<div class="bound"></div>');
+
+      const boundElHeight = window.innerHeight / 2;
+
+      $('.bound').height(boundElHeight);
+
+      this.helicropter = this._createWithoutInitialImage({
+        resize: {
+          boundEl: $('.bound')[0],
+          offset: 0,
+        },
+      });
+      this.helicropter._view._croppingArea.trigger('cropper-set-image');
+
+      this.helicropter._view.on('scale-view', done);
+
+      this.resizeWindowHeightTo(boundElHeight - 1);
+    });
+
+    it('stops scaling the cropper when :minHeight is reached', function(done) {
+      const minHeight = window.innerHeight * .4;
+
+      this.helicropter = this._createWithoutInitialImage({
+        resize: {
+          minHeight,
+        },
+      });
+
+      this.helicropter.render($('#jasmine-fixtures'));
+      this.helicropter._view._croppingArea.trigger('cropper-set-image');
+
+      const $cropper = this.helicropter._view._croppingArea.$canvasContainer;
+      let oldHeight;
+
+      this.helicropter._view.on('scale-out-of-bound', () => {
+        this.waitAFrame().then(() => {
+          const height = $cropper.height();
+
+          expect(height).toEqual(oldHeight);
+          done();
+        });
+      });
+
+      this.helicropter._view.on('scale-view', () => {
+        this.waitAFrame().then(() => {
+          oldHeight = $cropper.height();
+
+          this.resizeWindowHeightTo(minHeight - 1);
+        });
+      });
+
+      this.resizeWindowHeightTo(minHeight + 1);
+    });
+  });
 });
