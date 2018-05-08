@@ -106,6 +106,10 @@ export default View.extend({
     return this._uploader.choose();
   },
 
+  setDropElement($context) {
+    return this._uploader.setDropElement($context);
+  },
+
   _URL() {
     return window.URL || window.webkitURL;
   },

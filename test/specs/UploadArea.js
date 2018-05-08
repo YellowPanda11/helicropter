@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import UploadArea from 'UploadArea';
 import config from '../fixtures/config';
+import CloudUploader from '@behance/beff/Component/CloudUploader';
 
 describe('UploadArea', function() {
   beforeEach(function() {
@@ -24,6 +25,19 @@ describe('UploadArea', function() {
 
   afterEach(function() {
     this.uploadArea.destroy();
+  });
+
+  describe('#setDropElement', function() {
+    it('sets the element as a drop zone', function() {
+      this.uploadArea = this.create();
+
+      spyOn(this.uploadArea._uploader, 'setDropElement').and.callThrough();
+
+      this.uploadArea.setDropElement($('#jasmine-fixtures'));
+
+      expect(this.uploadArea._uploader instanceof CloudUploader).toBe(true);
+      expect(this.uploadArea._uploader.setDropElement).toHaveBeenCalledWith($('#jasmine-fixtures'));
+    });
   });
 
   it('supplies a default title', function() {

@@ -4,7 +4,7 @@ import images from '../fixtures/images';
 
 describe('Helicropter', function() {
   beforeEach(function() {
-    setFixtures('<div class="helicropter-container"></div>');
+    setFixtures('<div class="helicropter-container"><div class="droppable"></div></div>');
 
     setStyleFixtures('.hide { display: none; }');
 
@@ -21,6 +21,10 @@ describe('Helicropter', function() {
         },
       },
     };
+
+    this.file = new File(['foo'], '', {
+      type: 'image/png',
+    });
 
     this._createWithInitialImage = customConfig => {
       const initialImage = {
@@ -112,12 +116,6 @@ describe('Helicropter', function() {
   });
 
   describe('#uploadThenRender', function() {
-    beforeEach(function() {
-      this.file = new File(['foo'], '', {
-        type: 'image/png',
-      });
-    });
-
     it('does not render until the image is submitted', function() {
       this.helicropter = new Helicropter(this.defaultConfig);
 
@@ -166,6 +164,28 @@ describe('Helicropter', function() {
 
       this.helicropter.uploadThenRender($('.helicropter-container'));
       this.helicropter._view._uploadArea._uploader.trigger('cancel');
+    });
+  });
+
+  describe('#dropFileThenRender', function() {
+    beforeEach(function() {
+      this.helicropter = new Helicropter(this.defaultConfig);
+      spyOn(this.helicropter._view._uploadArea, 'setDropElement').and.callThrough();
+      this.helicropter.dropFileThenRender($('.droppable'), $('.helicropter-container'));
+    });
+
+    it('emits image:uploading when the uploader is uploading', function(done) {
+      this.helicropter.on('image:uploading', done);
+      this.helicropter._view._uploadArea._uploader.trigger('submit', { file: this.file });
+    });
+
+    it('emits error:upload when the upload results in error', function(done) {
+      this.helicropter.on('error:upload', done);
+      this.helicropter._view._uploadArea._uploader.trigger('error');
+    });
+
+    it('sets the element as a drop zone', function() {
+      expect(this.helicropter._view._uploadArea.setDropElement).toHaveBeenCalledWith($('.droppable'));
     });
   });
 
