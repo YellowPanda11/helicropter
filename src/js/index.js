@@ -12,6 +12,8 @@ import PreviewCrop from './PreviewCrop';
 
 import mustache from 'hgn-loader!../templates/wrapper';
 
+import $ from 'jquery';
+
 const HelicropterView = View.extend({
   mustache,
 
@@ -69,6 +71,8 @@ const HelicropterView = View.extend({
         cropHeight: this._model.get('cropSize').height,
       });
     }
+
+    this._scale = 1;
 
     this._bindSubsections();
   },
@@ -177,8 +181,41 @@ const HelicropterView = View.extend({
     this.trigger('error:upload', err);
   },
 
+  _initScaleView() {
+    if (!this._model.get('resize')) {
+      return;
+    }
+
+    this._resize = Object.assign({
+      boundEl: document,
+      minHeight: 0,
+      offset: 30,
+    }, this._model.get('resize'));
+
+    const $boundEl = $(this._resize.boundEl);
+    const initialHeight = $boundEl.outerHeight(true);
+
+    this.bar = initialHeight + this._resize.offset;
+
+    window.addEventListener('resize', () => this._calculateViewScale());
+
+    this._calculateViewScale();
+  },
+
+  _calculateViewScale() {
+    if (window.innerHeight > this.bar || window.innerHeight < this._resize.minHeight) {
+      this.trigger('scale-out-of-bound');
+      return;
+    }
+
+    this._scale = Number(parseFloat(window.innerHeight / this.bar).toFixed(2));
+
+    this.trigger('scale-view', { scale: this._scale });
+  },
+
   _bindSubsections() {
     this._croppingArea.relay(this._zoomSlider, 'scale');
+    this._croppingArea.relay(this, 'scale-view');
     this._zoomSlider.relay(this._croppingArea, 'image-loaded set-crop-size');
 
     this.listenTo(this._croppingArea, {
@@ -189,6 +226,10 @@ const HelicropterView = View.extend({
 
       'upload-error'(err = {}) {
         this._handleUploadError(err);
+      },
+
+      'cropper-set-image'() {
+        this._initScaleView();
       },
     });
 
@@ -280,6 +321,11 @@ const HelicropterView = View.extend({
 
     this.trigger('controls:disabled');
   },
+
+  destroy() {
+    window.removeEventListener('resize', () => this._calculateViewScale());
+    this._super();
+  },
 });
 
 const Helicropter = Controller.extend({
@@ -321,13 +367,14 @@ const Helicropter = Controller.extend({
 
   getCroppedImage({ width, height }) {
     const { dimensions, src } = this.crop();
+    const scale = this._view._scale;
 
     return BeffImage.load(src).then(beffImage => {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
 
-      canvas.width = width;
-      canvas.height = height;
+      canvas.width = width * scale;
+      canvas.height = height * scale;
       ctx.drawImage(
         beffImage.image,
         dimensions.x,
@@ -336,8 +383,8 @@ const Helicropter = Controller.extend({
         dimensions.height,
         0,
         0,
-        width,
-        height,
+        width * scale,
+        height * scale,
       );
 
       return canvas.toDataURL('image/png');

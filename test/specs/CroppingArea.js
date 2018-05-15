@@ -10,6 +10,10 @@ describe('CroppingArea', function() {
   beforeEach(function() {
     this.$el = affix('.js-cropping-area-parent');
     this.croppingArea = createCroppingArea(this.$el);
+
+    this.waitAFrame = function() {
+      return new Promise(resolve => requestAnimationFrame(() => resolve()));
+    };
   });
 
   afterEach(function() {
@@ -50,6 +54,19 @@ describe('CroppingArea', function() {
     });
 
     expect(this.croppingArea._warningBox.item(1).text).toEqual(blurryImageWarningText);
+  });
+
+  it('scales view to the value', function(done) {
+    const width = this.croppingArea.$canvasContainer.width();
+    const height = this.croppingArea.$canvasContainer.height();
+    const scale = .5;
+    this.croppingArea._scaleView({ scale });
+
+    this.waitAFrame().then(() => {
+      expect(this.croppingArea.$canvasContainer.width()).toEqual(width * scale);
+      expect(this.croppingArea.$canvasContainer.height()).toEqual(height * scale);
+      done();
+    });
   });
 
   describe('#getCropData', function() {

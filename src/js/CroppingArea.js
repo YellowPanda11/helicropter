@@ -20,9 +20,16 @@ export default View.extend({
       height: this._model.canvasHeight,
     });
 
+    const canvasContainerClass = 'js-canvas-container';
+
     this._canvas = new fabric.Canvas(this._$canvas[0], {
       selection: false,
+      containerClass: canvasContainerClass,
     });
+
+    this.$canvasContainer = this.$view.find(`.${canvasContainerClass}`);
+    this.$cropperCanvas = this.$view.find('.js-cropper-canvas');
+    this.$canvasContainer.css('transform-origin', 'left top');
 
     // IMPORTANT: Using undocumented Fabric.js API here to force retina-like behavior
     // even on screens that are not retina. This is a hack to mitigate the lack of anti-aliasing
@@ -63,10 +70,16 @@ export default View.extend({
         }
       },
 
+      'scale-view'({ scale }) {
+        this._scaleView({ scale });
+      },
+
       'set-image'(imageSrc, coordinates) {
         this._model.image = imageSrc;
         this._createImage(coordinates)
           .catch((err) => console.error(err));
+
+        this.trigger('cropper-set-image');
       },
 
       'ratio-locked'(ratioLocked) {
@@ -156,6 +169,28 @@ export default View.extend({
     scaledValues.height = Math.floor(scaledValues.height * reductionRatio);
 
     return scaledValues;
+  },
+
+  _scaleView({ scale }) {
+    this.$canvasContainer.css({
+      transform: `scale(${scale})`,
+    });
+
+    requestAnimationFrame(() => {
+      const boundRect = this.$cropperCanvas[0].getBoundingClientRect();
+      let width = boundRect.width;
+      let height = boundRect.height;
+
+      if (!boundRect.width || !boundRect.height) {
+        width = parseInt(this.$cropperCanvas.width()) * scale;
+        height = parseInt(this.$cropperCanvas.height()) * scale;
+      }
+
+      this.$canvasContainer.css({
+        width,
+        height,
+      });
+    });
   },
 
   _setCropSizeByAspectRatio(ratio) {
