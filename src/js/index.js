@@ -5,7 +5,7 @@ import BeffImage from '@behance/beff/dom/Image';
 
 import UploadArea from './UploadArea';
 import CroppingArea from './CroppingArea';
-import ZoomSlider from './ZoomSlider';
+import { ZoomSlider } from './ZoomSlider';
 import RatioLock from './RatioLock';
 import SuggestionArea from './SuggestionArea';
 import PreviewCrop from './PreviewCrop';
@@ -259,6 +259,14 @@ const HelicropterView = View.extend({
       },
     });
 
+    this._zoomSlider.on('image-non-scalable', () => {
+      this._pauseControls();
+    });
+
+    this._zoomSlider.on('image-scalable', () => {
+      this._resumeControls();
+    });
+
     this.on('remove-image', () => {
       this._uploadArea.trigger('image-upload-complete');
       this._disableImageManipulation();
@@ -322,6 +330,28 @@ const HelicropterView = View.extend({
     this.trigger('controls:disabled');
   },
 
+  _pauseControls() {
+    this._zoomSlider.disable();
+    this.$view.find('.js-crop-controls').hide();
+    this._croppingArea.disable();
+    this.trigger('controls:paused');
+
+    this.isControlPaused = true;
+  },
+
+  _resumeControls() {
+    if (!this.isControlPaused) {
+      return;
+    }
+
+    this._zoomSlider.enable();
+    this.$view.find('.js-crop-controls').show();
+    this._croppingArea.enable();
+    this.trigger('controls:resumed');
+
+    this.isControlPaused = false;
+  },
+
   destroy() {
     window.removeEventListener('resize', () => this._calculateViewScale());
     this._super();
@@ -358,7 +388,7 @@ const Helicropter = Controller.extend({
 
   init(model) {
     this._super(extend({}, this._defaults, model));
-    this.relay(this._view, 'controls:enabled controls:disabled image:uploading image:uploaded image:loaded error:upload image:cancelled');
+    this.relay(this._view, 'controls:enabled controls:disabled controls:paused controls:resumed image:uploading image:uploaded image:loaded error:upload image:cancelled');
   },
 
   crop() {

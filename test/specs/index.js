@@ -43,6 +43,8 @@ describe('Helicropter', function() {
       inst.render($('.helicropter-container'));
       return inst;
     };
+
+    this.triggerImageNonScalable = () => this.helicropter._view._zoomSlider.trigger('image-non-scalable');
   });
 
   afterEach(function() {
@@ -445,6 +447,82 @@ describe('Helicropter', function() {
       });
 
       this.resizeWindowHeightTo(minHeight + 1);
+    });
+  });
+
+  describe('when a user uploads a min size image', function() {
+    beforeEach(function() {
+      this.helicropter = this._createWithInitialImage();
+    });
+
+    it('disables the slider', function() {
+      this.triggerImageNonScalable();
+      expect(this.helicropter._view._zoomSlider.$view).toHaveClass('disabled');
+      expect(this.helicropter._view._zoomSlider._$slider).toHaveAttr('disabled');
+    });
+
+    it('hides .js-crop-controls', function() {
+      this.triggerImageNonScalable();
+      expect($('.js-crop-controls')).not.toBeVisible();
+    });
+
+    it('disables the cropper', function() {
+      const cropperCanvas = this.helicropter._view._croppingArea._canvas;
+
+      this.triggerImageNonScalable();
+
+      expect(cropperCanvas.selection).toBe(false);
+      cropperCanvas.forEachObject(function(object) {
+        expect(object.selectable).toBe(false);
+      });
+      expect(cropperCanvas.hoverCursor).toEqual('default');
+    });
+
+    it('emits controls:paused', function(done) {
+      this.helicropter.on('controls:paused', done);
+
+      this.triggerImageNonScalable();
+    });
+  });
+
+  describe('when a user reuploads with an image bigger than the min size', function() {
+    beforeEach(function() {
+      this.helicropter = this._createWithInitialImage();
+
+      this.triggerImageScalable = () => this.helicropter._view._zoomSlider.trigger('image-scalable');
+    });
+
+    it('enables the slider', function() {
+      this.triggerImageNonScalable();
+      this.triggerImageScalable();
+      expect(this.helicropter._view._zoomSlider.$view).not.toHaveClass('disabled');
+      expect(this.helicropter._view._zoomSlider._$slider).not.toHaveAttr('disabled');
+    });
+
+    it('shows .js-crop-controls', function() {
+      this.triggerImageNonScalable();
+      this.triggerImageScalable();
+      expect($('.js-crop-controls')).toBeVisible();
+    });
+
+    it('enables the cropper', function() {
+      const cropperCanvas = this.helicropter._view._croppingArea._canvas;
+
+      this.triggerImageNonScalable();
+      this.triggerImageScalable();
+
+      expect(cropperCanvas.selection).toBe(true);
+      cropperCanvas.forEachObject(function(object) {
+        expect(object.selectable).toBe(true);
+      });
+      expect(cropperCanvas.hoverCursor).toEqual('move');
+    });
+
+    it('emits controls:resumed', function(done) {
+      this.helicropter.on('controls:resumed', done);
+
+      this.triggerImageNonScalable();
+      this.triggerImageScalable();
     });
   });
 });

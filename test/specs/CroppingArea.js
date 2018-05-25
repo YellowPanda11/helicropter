@@ -69,6 +69,46 @@ describe('CroppingArea', function() {
     });
   });
 
+  describe('#disable', function() {
+    beforeEach(function() {
+      this.croppingArea.disable();
+    });
+
+    it('makes canvas unselectable', function() {
+      expect(this.croppingArea._canvas.selection).toBe(false);
+    });
+
+    it('makes objects inside canvas el unselectable', function() {
+      this.croppingArea._canvas.forEachObject(function(object) {
+        expect(object.selectable).toBe(false);
+      });
+    });
+
+    it('sets canvas hover cursor to default', function() {
+      expect(this.croppingArea._canvas.hoverCursor).toEqual('default');
+    });
+  });
+
+  describe('#enable', function() {
+    beforeEach(function() {
+      this.croppingArea.enable();
+    });
+
+    it('makes canvas selectable', function() {
+      expect(this.croppingArea._canvas.selection).toBe(true);
+    });
+
+    it('makes objects inside canvas el selectable', function() {
+      this.croppingArea._canvas.forEachObject(function(object) {
+        expect(object.selectable).toBe(true);
+      });
+    });
+
+    it('sets canvas hover cursor to move', function() {
+      expect(this.croppingArea._canvas.hoverCursor).toEqual('move');
+    });
+  });
+
   describe('#getCropData', function() {
     it('returns undefined if no image is defined', function() {
       expect(this.croppingArea.getCropData()).not.toBeDefined();
