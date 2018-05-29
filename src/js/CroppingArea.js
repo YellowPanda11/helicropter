@@ -129,6 +129,22 @@ export default View.extend({
     }
   },
 
+  disable() {
+    this._canvas.selection = false;
+    this._canvas.forEachObject(function(object) {
+      object.selectable = false;
+    });
+    this._canvas.hoverCursor = 'default';
+  },
+
+  enable() {
+    this._canvas.selection = true;
+    this._canvas.forEachObject(function(object) {
+      object.selectable = true;
+    });
+    this._canvas.hoverCursor = 'move';
+  },
+
   getCropData() {
     if (!this._image) { return; }
 

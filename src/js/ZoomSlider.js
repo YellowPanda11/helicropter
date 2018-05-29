@@ -5,7 +5,9 @@ import template from 'hgn-loader!../templates/zoom-slider';
 const MAX_SCALE = 1.0;
 const TOTAL_STEPS = 100;
 
-export default View.extend({
+export const maxScale = MAX_SCALE;
+
+export const ZoomSlider = View.extend({
   mustache: template,
 
   rendered() {
@@ -16,6 +18,7 @@ export default View.extend({
       'image-loaded'({ scale, minScale }) {
         this._scaleMin = minScale;
         this._calculateScaleStep(scale);
+        this._evaluateScalability();
       },
 
       'set-crop-size'({ minScale }) {
@@ -24,6 +27,7 @@ export default View.extend({
         this._scaleMin = minScale;
         this._calculateScaleStep(previousScale);
         this.trigger('scale', this._currentScale());
+        this._evaluateScalability();
       },
     });
   },
@@ -40,6 +44,15 @@ export default View.extend({
   enable() {
     this.$view.removeClass('disabled');
     this._$slider.prop('disabled', false);
+  },
+
+  _evaluateScalability() {
+    if (MAX_SCALE === this._scaleMin) {
+      this.trigger('image-non-scalable');
+      return;
+    }
+
+    this.trigger('image-scalable');
   },
 
   _calculateScaleStep(initialScale = 0) {

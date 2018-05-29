@@ -1,4 +1,4 @@
-import ZoomSlider from 'ZoomSlider';
+import { maxScale, ZoomSlider } from 'ZoomSlider';
 
 describe('ZoomSlider', function() {
   beforeEach(function() {
@@ -68,6 +68,52 @@ describe('ZoomSlider', function() {
   });
 
   describe('events', function() {
+    describe('#image-non-scalable', function() {
+      beforeEach(function() {
+        this.minScale = maxScale;
+      });
+
+      it('is emitted when image is loaded with "minScale" being the same as "MAX_SCALE"', function(done) {
+        this.zoomSlider.on('image-non-scalable', done);
+
+        this.zoomSlider.trigger('image-loaded', {
+          scale: 'foo',
+          minScale: this.minScale,
+        });
+      });
+
+      it('is emitted when image is setting crop size with "minScale" being the same as "MAX_SCALE"', function(done) {
+        this.zoomSlider.on('image-non-scalable', done);
+
+        this.zoomSlider.trigger('set-crop-size', {
+          minScale: this.minScale,
+        });
+      });
+    });
+
+    describe('#image-scalable', function() {
+      beforeEach(function() {
+        this.minScale = maxScale / 2;
+      });
+
+      it('is emitted when image is loaded with "minScale" being less than "MAX_SCALE"', function(done) {
+        this.zoomSlider.on('image-scalable', done);
+
+        this.zoomSlider.trigger('image-loaded', {
+          scale: 'foo',
+          minScale: this.minScale,
+        });
+      });
+
+      it('is emitted when image is setting crop size with "minScale" being less than "MAX_SCALE"', function(done) {
+        this.zoomSlider.on('image-scalable', done);
+
+        this.zoomSlider.trigger('set-crop-size', {
+          minScale: this.minScale,
+        });
+      });
+    });
+
     describe('#image-loaded', function() {
       describe('when only triggered with a minScale', function() {
         beforeEach(function() {
