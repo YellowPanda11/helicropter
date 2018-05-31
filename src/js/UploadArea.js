@@ -176,6 +176,10 @@ export default View.extend({
         this.trigger('image-progress', { loaded, total });
       },
 
+      processing() {
+        this.trigger('image-processing');
+      },
+
       complete({ file, uploadPath, uploadEndpoint, response }) {
         this.trigger('image-upload-complete');
 

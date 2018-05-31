@@ -199,6 +199,16 @@ describe('UploadArea', function() {
     });
   });
 
+  describe('image processing', function() {
+    it('emits "image-processing" when _uploader emits processing', function(done) {
+      this.uploadArea = this.create();
+
+      this.uploadArea.on('image-processing', done);
+
+      this.uploadArea._uploader.trigger('processing');
+    });
+  });
+
   describe('cancel', function() {
     it('emits "image-upload-cancel" when _uploader emits cancel', function(done) {
       this.uploadArea = this.create();
