@@ -525,4 +525,14 @@ describe('Helicropter', function() {
       this.triggerImageScalable();
     });
   });
+
+  describe('when the image is being processed', function() {
+    it('emits "image:processing event"', function(done) {
+      this.helicropter = this._createWithoutInitialImage();
+
+      this.helicropter.on('image:processing', done);
+
+      this.helicropter._view._uploadArea.trigger('image-processing');
+    });
+  });
 });
