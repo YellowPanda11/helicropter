@@ -151,8 +151,8 @@ export default View.extend({
     return {
       x: Math.max(0, (this._getImageProp('left') * -1) + this._getCropAreaProp('left')),
       y: Math.max(0, (this._getImageProp('top') * -1) + this._getCropAreaProp('top')),
-      width: Math.max(1, this._cropArea.getWidth()),
-      height: Math.max(1, this._cropArea.getHeight()),
+      width: Math.max(1, this._cropArea.width),
+      height: Math.max(1, this._cropArea.height),
       scale: this._image.getScaleX(),
     };
   },
