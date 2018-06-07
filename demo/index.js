@@ -27,8 +27,8 @@ const cropper = new Helicropter({
     width: 4,
     height: 3,
   },
-  viewportRatio: 'static',
-  allowTransparency: false,
+  viewportRatio: 'dynamic',
+  allowTransparency: true,
   // uploadTitle: 'Upload a new cover image',
   // uploadSubtitle: 'This will not affect your Behance cover image',
   initialImage: {
