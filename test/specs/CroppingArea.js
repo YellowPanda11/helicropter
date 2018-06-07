@@ -110,26 +110,48 @@ describe('CroppingArea', function() {
   });
 
   describe('#getCropData', function() {
+    beforeEach(function() {
+      this.cropWidth = 50;
+      this.cropHeight = 30;
+
+      this.croppingArea = createCroppingArea(this.$el, {
+        viewportRatio: 'static',
+        cropWidth: this.cropWidth,
+        cropHeight: this.cropHeight,
+      });
+    });
+
     it('returns undefined if no image is defined', function() {
       expect(this.croppingArea.getCropData()).not.toBeDefined();
+    });
+
+    it('returns the original value of width and height', function() {
+      spyOn(this.croppingArea, '_getImageProp').and.returnValue(1);
+      spyOn(this.croppingArea, '_getCropAreaProp').and.returnValue(0);
+
+      this.croppingArea._image = { getScaleX: () => 1.0 };
+
+      const data = this.croppingArea.getCropData();
+
+      expect(this.croppingArea._cropArea.getStrokeWidth()).toBeGreaterThan(0);
+      expect(data.width).toEqual(this.cropWidth);
+      expect(data.height).toEqual(this.cropHeight);
     });
 
     it('does not allow x/y coordinates less than 0', function() {
       spyOn(this.croppingArea, '_getImageProp').and.returnValue(1);
       spyOn(this.croppingArea, '_getCropAreaProp').and.returnValue(0);
 
-      this.croppingArea._cropArea = {
-        getWidth: () => 100,
-        getHeight: () => 50,
-      };
+      this.croppingArea._cropArea.width = 100;
+      this.croppingArea._cropArea.height = 50;
 
       this.croppingArea._image = { getScaleX: () => 1.0 };
 
       expect(this.croppingArea.getCropData()).toEqual({
         x: 0,
         y: 0,
-        width: 100,
-        height: 50,
+        width: this.croppingArea._cropArea.width,
+        height: this.croppingArea._cropArea.height,
         scale: 1.0,
       });
     });
@@ -138,10 +160,8 @@ describe('CroppingArea', function() {
       spyOn(this.croppingArea, '_getImageProp').and.returnValue(1);
       spyOn(this.croppingArea, '_getCropAreaProp').and.returnValue(0);
 
-      this.croppingArea._cropArea = {
-        getWidth: () => 0,
-        getHeight: () => 0,
-      };
+      this.croppingArea._cropArea.width = 0;
+      this.croppingArea._cropArea.height = 0;
 
       this.croppingArea._image = { getScaleX: () => 1.0 };
 
@@ -157,6 +177,10 @@ describe('CroppingArea', function() {
 
   describe('#getDimensions', function() {
     beforeEach(function() {
+      this.croppingArea = createCroppingArea(this.$el, {
+        viewportRatio: 'static',
+      });
+
       spyOn(this.croppingArea, '_getImageProp').and.callFake((prop) => {
         return {
           left: -5,
@@ -176,10 +200,8 @@ describe('CroppingArea', function() {
     });
 
     it('returns scaled coordinates', function() {
-      this.croppingArea._cropArea = {
-        getWidth: () => 100,
-        getHeight: () => 50,
-      };
+      this.croppingArea._cropArea.width = 100;
+      this.croppingArea._cropArea.height = 50;
 
       expect(this.croppingArea.getDimensions()).toEqual({
         x: 10,
@@ -190,10 +212,8 @@ describe('CroppingArea', function() {
     });
 
     it('clamps coordinates to native width if scaled width is greater than native width', function() {
-      this.croppingArea._cropArea = {
-        getWidth: () => 400,
-        getHeight: () => 100,
-      };
+      this.croppingArea._cropArea.width = 400;
+      this.croppingArea._cropArea.height = 100;
 
       expect(this.croppingArea.getDimensions()).toEqual({
         x: 3,
@@ -204,10 +224,8 @@ describe('CroppingArea', function() {
     });
 
     it('clamps coordinates to native height if scaled height is greater than native height', function() {
-      this.croppingArea._cropArea = {
-        getWidth: () => 100,
-        getHeight: () => 400,
-      };
+      this.croppingArea._cropArea.width = 100;
+      this.croppingArea._cropArea.height = 400;
 
       expect(this.croppingArea.getDimensions()).toEqual({
         x: 3,
