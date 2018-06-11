@@ -198,8 +198,8 @@ export default View.extend({
       let height = boundRect.height;
 
       if (!boundRect.width || !boundRect.height) {
-        width = parseInt(this.$cropperCanvas.width()) * scale;
-        height = parseInt(this.$cropperCanvas.height()) * scale;
+        width = Number(this.$cropperCanvas.width()) * scale;
+        height = Number(this.$cropperCanvas.height()) * scale;
       }
 
       this.$canvasContainer.css({
