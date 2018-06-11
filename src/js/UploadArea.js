@@ -165,6 +165,18 @@ export default View.extend({
   },
 
   _bind() {
+    this.listenOnce(this, {
+      'scale-view'({ scale }) {
+        const width = Number(this._$container.width()) * scale;
+        const height = Number(this._$container.height()) * scale;
+
+        this._$container.css({
+          width,
+          height,
+        });
+      },
+    });
+
     this.listenTo(this._uploader, {
       submit({ file }) {
         this._model.backgroundImage = this._URL().createObjectURL(file);

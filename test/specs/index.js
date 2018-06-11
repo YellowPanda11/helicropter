@@ -374,7 +374,7 @@ describe('Helicropter', function() {
       });
 
       this.helicropter.render($('#jasmine-fixtures'));
-      this.helicropter._view._croppingArea.trigger('cropper-set-image');
+      this.helicropter._view._uploadArea.trigger('image-uploading');
 
       const $cropper = this.helicropter._view._croppingArea.$canvasContainer;
       const oldHeight = $cropper.height();
@@ -407,7 +407,7 @@ describe('Helicropter', function() {
           offset: 0,
         },
       });
-      this.helicropter._view._croppingArea.trigger('cropper-set-image');
+      this.helicropter._view._uploadArea.trigger('image-uploading');
 
       this.helicropter._view.on('scale-view', done);
 
@@ -424,7 +424,7 @@ describe('Helicropter', function() {
       });
 
       this.helicropter.render($('#jasmine-fixtures'));
-      this.helicropter._view._croppingArea.trigger('cropper-set-image');
+      this.helicropter._view._uploadArea.trigger('image-uploading');
 
       const $cropper = this.helicropter._view._croppingArea.$canvasContainer;
       let oldHeight;

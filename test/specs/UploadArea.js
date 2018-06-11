@@ -80,6 +80,26 @@ describe('UploadArea', function() {
     expect($('.js-image-upload-subtext')).toHaveText('foobar');
   });
 
+  it('scales _$container on "scale-view"', function() {
+    const scale = .5;
+    const width = 100;
+    const height = 200;
+
+    const expectedWidth = width * scale;
+    const expectedHeight = height * scale;
+
+    this.uploadArea = this.create();
+    this.uploadArea._$container.css({
+      width,
+      height,
+    });
+
+    this.uploadArea.trigger('scale-view', { scale });
+
+    expect(parseInt(this.uploadArea._$container.css('width'))).toEqual(expectedWidth);
+    expect(parseInt(this.uploadArea._$container.css('height'))).toEqual(expectedHeight);
+  });
+
   describe('loaderStyle', function() {
     describe('progressbar', function() {
       beforeEach(function() {

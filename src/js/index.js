@@ -216,6 +216,7 @@ const HelicropterView = View.extend({
   _bindSubsections() {
     this._croppingArea.relay(this._zoomSlider, 'scale');
     this._croppingArea.relay(this, 'scale-view');
+    this._uploadArea.relay(this, 'scale-view');
     this._zoomSlider.relay(this._croppingArea, 'image-loaded set-crop-size');
 
     this.listenTo(this._croppingArea, {
@@ -227,10 +228,6 @@ const HelicropterView = View.extend({
       'upload-error'(err = {}) {
         this._handleUploadError(err);
       },
-
-      'cropper-set-image'() {
-        this._initScaleView();
-      },
     });
 
     this.listenTo(this._uploadArea, {
@@ -238,6 +235,7 @@ const HelicropterView = View.extend({
         this._disableImageManipulation();
         this.trigger('image:uploading');
         this._hideError();
+        this._initScaleView();
       },
 
       'image-processing'() {
@@ -434,6 +432,7 @@ const Helicropter = Controller.extend({
       'image-uploading'() {
         this.trigger('image:uploading');
         this.render($context);
+        this._initScaleView();
       },
     });
 
