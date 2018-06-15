@@ -214,6 +214,11 @@ export default View.extend({
   },
 
   _createBackground() {
+    if (this._backgroundLayer) {
+      this._backgroundLayer.remove();
+      this._backgroundLayer = null;
+    }
+
     switch (this._model.backgroundType) {
       case 'solid':
         return this._createSolidBackground();
@@ -299,7 +304,7 @@ export default View.extend({
 
     return this._loadImage(this._model.image)
       .then((image) => {
-        const backgroundImage = new fabric.Image(image, {
+        this._backgroundLayer = new fabric.Image(image, {
           left: 0,
           top: 0,
           originX: 'left',
@@ -309,21 +314,21 @@ export default View.extend({
           hasControls: false,
         });
 
-        this._backgroundCanvas.add(backgroundImage);
+        this._backgroundCanvas.add(this._backgroundLayer);
 
-        backgroundImage.canvas.contextContainer.filter = 'blur(70px) brightness(.8)';
+        this._backgroundLayer.canvas.contextContainer.filter = 'blur(70px) brightness(.8)';
 
-        const isLandscape = backgroundImage.width > backgroundImage.height;
+        const isLandscape = this._backgroundLayer.width > this._backgroundLayer.height;
 
         if (isLandscape) {
-          backgroundImage.scaleToHeight(this._canvas.height);
+          this._backgroundLayer.scaleToHeight(this._canvas.height);
         }
         else {
-          backgroundImage.scaleToWidth(this._canvas.width);
+          this._backgroundLayer.scaleToWidth(this._canvas.width);
         }
 
-        backgroundImage.sendToBack();
-        backgroundImage.center();
+        this._backgroundLayer.sendToBack();
+        this._backgroundLayer.center();
 
         this._scaleView({ $el: this.$backgroundContainer, scale: this.scale });
       });
@@ -331,7 +336,7 @@ export default View.extend({
 
   _createSolidBackground() {
     return new Promise(resolve => {
-      const solidRect = new fabric.Rect({
+      this._backgroundLayer = new fabric.Rect({
         left: 0,
         top: 0,
         width: this._model.canvasWidth,
@@ -343,8 +348,8 @@ export default View.extend({
         hasControls: false,
       });
 
-      this._canvas.add(solidRect);
-      solidRect.sendToBack();
+      this._canvas.add(this._backgroundLayer);
+      this._backgroundLayer.sendToBack();
 
       resolve();
     });
@@ -358,7 +363,7 @@ export default View.extend({
           repeat: 'repeat',
         });
 
-        const patternRect = new fabric.Rect({
+        this._backgroundLayer = new fabric.Rect({
           left: 0,
           top: 0,
           width: this._model.canvasWidth * 2,
@@ -370,10 +375,10 @@ export default View.extend({
           hasControls: false,
         });
 
-        this._canvas.add(patternRect);
-        patternRect.sendToBack();
-        patternRect.scale(0.5).setCoords();
-        patternRect.center().setCoords();
+        this._canvas.add(this._backgroundLayer);
+        this._backgroundLayer.sendToBack();
+        this._backgroundLayer.scale(0.5).setCoords();
+        this._backgroundLayer.center().setCoords();
       });
   },
 
