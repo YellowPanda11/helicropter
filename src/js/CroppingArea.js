@@ -15,21 +15,28 @@ export default View.extend({
 
   rendered() {
     this._$canvas = this.$view.find('.js-cropper-canvas');
-    this._$canvas.prop({
+
+    this.canvasCss = {
       width: this._model.canvasWidth,
       height: this._model.canvasHeight,
-    });
+    };
 
-    const canvasContainerClass = 'js-canvas-container';
+    this._$canvas.prop(this.canvasCss);
+
+    this.canvasOrder = ['background', 'foreground'];
+
+    const containerClass = 'js-canvas-container';
 
     this._canvas = new fabric.Canvas(this._$canvas[0], {
       selection: false,
-      containerClass: canvasContainerClass,
+      containerClass,
     });
 
-    this.$canvasContainer = this.$view.find(`.${canvasContainerClass}`);
-    this.$cropperCanvas = this.$view.find('.js-cropper-canvas');
-    this.$canvasContainer.css('transform-origin', 'left top');
+    this.$canvasContainer = this.$view.find(`.${containerClass}`);
+    this.$canvasContainer.css({
+      transformOrigin: 'left top',
+      zIndex: this.canvasOrder.indexOf('foreground'),
+    });
 
     // IMPORTANT: Using undocumented Fabric.js API here to force retina-like behavior
     // even on screens that are not retina. This is a hack to mitigate the lack of anti-aliasing
@@ -50,8 +57,6 @@ export default View.extend({
       this._setCropSizeByAspectRatio(this._model.cropRatio);
     }
 
-    this._createTransparencyBackground();
-
     if (this._model.viewportRatio === 'static') {
       this._createStaticCropArea();
     }
@@ -71,13 +76,17 @@ export default View.extend({
       },
 
       'scale-view'({ scale }) {
-        this._scaleView({ scale });
+        this.scale = scale;
+        this._scaleView({ $el: this.$canvasContainer, scale });
+        this._scaleView({ $el: this.$backgroundContainer, scale });
       },
 
       'set-image'(imageSrc, coordinates) {
         this._model.image = imageSrc;
         this._createImage(coordinates)
           .catch((err) => console.error(err));
+
+        this._createBackground().then(() => this.trigger('background-loaded'));
 
         this.trigger('cropper-set-image');
       },
@@ -148,21 +157,24 @@ export default View.extend({
   getCropData() {
     if (!this._image) { return; }
 
-    return {
-      x: Math.max(0, (this._getImageProp('left') * -1) + this._getCropAreaProp('left')),
-      y: Math.max(0, (this._getImageProp('top') * -1) + this._getCropAreaProp('top')),
+    const retVal = {
+      x: this._getImageProp('left') * -1 + this._getCropAreaProp('left'),
+      y: this._getImageProp('top') * -1 + this._getCropAreaProp('top'),
       width: Math.max(1, this._cropArea.width),
       height: Math.max(1, this._cropArea.height),
       scale: this._image.getScaleX(),
     };
+
+    return Object.assign({}, retVal, {
+      x: this._model.allowLetterboxing ? retVal.x : Math.max(0, retVal.x),
+      y: this._model.allowLetterboxing ? retVal.y : Math.max(0, retVal.y),
+    });
   },
 
   getDimensions() {
     if (!this._image) { return; }
 
     const { x, y, width, height, scale } = this.getCropData();
-    const nativeWidth = this._getImageProp('width');
-    const nativeHeight = this._getImageProp('height');
 
     const scaledValues = {
       x: x / scale,
@@ -171,13 +183,7 @@ export default View.extend({
       height: height / scale,
     };
 
-    let reductionRatio = 1;
-    if (scaledValues.width > nativeWidth) {
-      reductionRatio = nativeWidth / scaledValues.width;
-    }
-    else if (scaledValues.height > nativeHeight) {
-      reductionRatio = nativeHeight / scaledValues.height;
-    }
+    const reductionRatio = this._getReductionRatio(scaledValues);
 
     scaledValues.x = Math.floor(scaledValues.x * reductionRatio);
     scaledValues.y = Math.floor(scaledValues.y * reductionRatio);
@@ -187,22 +193,57 @@ export default View.extend({
     return scaledValues;
   },
 
-  _scaleView({ scale }) {
-    this.$canvasContainer.css({
+  _getReductionRatio(scaledValues) {
+    let reductionRatio = 1;
+
+    if (this._model.allowLetterboxing) {
+      return reductionRatio;
+    }
+
+    const nativeWidth = this._getImageProp('width');
+    const nativeHeight = this._getImageProp('height');
+
+    if (scaledValues.width > nativeWidth) {
+      reductionRatio = nativeWidth / scaledValues.width;
+    }
+    else if (scaledValues.height > nativeHeight) {
+      reductionRatio = nativeHeight / scaledValues.height;
+    }
+
+    return reductionRatio;
+  },
+
+  _createBackground() {
+    switch (this._model.backgroundType) {
+      case 'solid':
+        return this._createSolidBackground();
+      case 'image':
+        return this._createBlurryImageBackground();
+      default:
+        return this._createTransparencyBackground();
+    }
+  },
+
+  _scaleView({ $el, scale }) {
+    if (!$el || !$el.length) {
+      return;
+    }
+
+    $el.css({
       transform: `scale(${scale})`,
     });
 
     requestAnimationFrame(() => {
-      const boundRect = this.$cropperCanvas[0].getBoundingClientRect();
+      const boundRect = this._$canvas[0].getBoundingClientRect();
       let width = boundRect.width;
       let height = boundRect.height;
 
       if (!boundRect.width || !boundRect.height) {
-        width = Number(this.$cropperCanvas.width()) * scale;
-        height = Number(this.$cropperCanvas.height()) * scale;
+        width = Number(this._$canvas.width()) * scale;
+        height = Number(this._$canvas.height()) * scale;
       }
 
-      this.$canvasContainer.css({
+      $el.css({
         width,
         height,
       });
@@ -224,6 +265,89 @@ export default View.extend({
       this._model.cropWidth = maxWidth;
       this._model.cropHeight = heightAtMaxWidth;
     }
+  },
+
+  _createBlurryImageBackground() {
+    if (!this._model.image) {
+      return;
+    }
+
+    const containerClass = 'js-background-canvas-container';
+    const canvasClass = 'js-background-canvas';
+    const foregroundContainerClass = this._canvas.containerClass;
+
+    this.$view.find(`.${foregroundContainerClass}`).after(`<canvas class="${canvasClass}"></canvas>`);
+
+    const $backgroundCanvas = this.$view.find(`.${canvasClass}`);
+
+    $backgroundCanvas.prop(this.canvasCss);
+
+    this._backgroundCanvas = new fabric.Canvas($backgroundCanvas[0], {
+      selection: false,
+      containerClass,
+    });
+
+    this.$backgroundContainer = this.$view.find(`.${containerClass}`);
+
+    this.$backgroundContainer.css({
+      position: 'absolute',
+      zIndex: this.canvasOrder.indexOf('background'),
+      left: 0,
+      top: 0,
+      transformOrigin: 'left top',
+    });
+
+    return this._loadImage(this._model.image)
+      .then((image) => {
+        const backgroundImage = new fabric.Image(image, {
+          left: 0,
+          top: 0,
+          originX: 'left',
+          originY: 'top',
+          selectable: false,
+          hasBorders: false,
+          hasControls: false,
+        });
+
+        this._backgroundCanvas.add(backgroundImage);
+
+        backgroundImage.canvas.contextContainer.filter = 'blur(70px) brightness(.8)';
+
+        const isLandscape = backgroundImage.width > backgroundImage.height;
+
+        if (isLandscape) {
+          backgroundImage.scaleToHeight(this._canvas.height);
+        }
+        else {
+          backgroundImage.scaleToWidth(this._canvas.width);
+        }
+
+        backgroundImage.sendToBack();
+        backgroundImage.center();
+
+        this._scaleView({ $el: this.$backgroundContainer, scale: this.scale });
+      });
+  },
+
+  _createSolidBackground() {
+    return new Promise(resolve => {
+      const solidRect = new fabric.Rect({
+        left: 0,
+        top: 0,
+        width: this._model.canvasWidth,
+        height: this._model.canvasHeight,
+        fill: this._model.backgroundHex,
+        selectable: false,
+        evented: false,
+        hasBorders: false,
+        hasControls: false,
+      });
+
+      this._canvas.add(solidRect);
+      solidRect.sendToBack();
+
+      resolve();
+    });
   },
 
   _createTransparencyBackground() {
@@ -278,7 +402,8 @@ export default View.extend({
 
         const normalizedCoordinates = this._normalizeCoordinates(coordinates);
 
-        this._image.scale(normalizedCoordinates.scale).setCoords();
+        this._scaleImage(normalizedCoordinates.scale);
+        this._image.setCoords();
         this._image.center();
 
         if (normalizedCoordinates.x !== null) {
@@ -368,6 +493,22 @@ export default View.extend({
     return lowerBoundFn(widthScaleMin, heightScaleMin);
   },
 
+  _lockVerticalPan(imageTop) {
+    if (!this._model.allowLetterboxing) {
+      return;
+    }
+
+    this._image.lockMovementY = imageTop >= 0;
+  },
+
+  _lockHorizontalPan(imageLeft) {
+    if (!this._model.allowLetterboxing) {
+      return;
+    }
+
+    this._image.lockMovementX = imageLeft >= 0;
+  },
+
   _scaleImage(scaleValue) {
     if (!scaleValue) { return; }
 
@@ -375,6 +516,7 @@ export default View.extend({
       width: this._image.getWidth(),
       height: this._image.getHeight(),
     };
+
     const previousCentroid = {
       left: (this._image.get('left') * -1) + this._cropArea.get('left') + (this._cropArea.getWidth() / 2),
       top: (this._image.get('top') * -1) + this._cropArea.get('top') + (this._cropArea.getHeight() / 2),
@@ -391,10 +533,15 @@ export default View.extend({
       top: previousCentroid.top * (postDimensions.height / previousDimensions.height),
     };
 
-    this._image.set('left', this._image.get('left') + (previousCentroid.left - postCentroid.left));
-    this._image.set('top', this._image.get('top') + (previousCentroid.top - postCentroid.top));
+    const imageTop = this._image.get('top') + (previousCentroid.top - postCentroid.top);
+    const imageLeft = this._image.get('left') + (previousCentroid.left - postCentroid.left);
+
+    this._image.set('left', imageLeft);
+    this._image.set('top', imageTop);
     this._image.setCoords();
 
+    this._lockVerticalPan(imageTop);
+    this._lockHorizontalPan(imageLeft);
     this._checkImageBounds();
 
     this.trigger('scaling', this._getImageInfo());
