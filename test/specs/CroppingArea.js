@@ -84,116 +84,136 @@ describe('CroppingArea', function() {
     });
   });
 
-  describe('allowLetterboxing', function() {
-    it('locks vertical pan when it is true and there is no room to pan vertically', function(done) {
-      this.loadImage({ allowLetterboxing: true }).then(() => {
-        spyOn(this.croppingArea._cropArea, 'get').and.callFake((arg) => {
-          return {
-            top: 100,
-          }[arg];
+  describe('events', function() {
+    describe('set-image', function() {
+      it('redraws the background layer when the cropper is loaded with an image', function(done) {
+        const oldLayer = 'bglayer';
+        this.croppingArea._backgroundLayer = {
+          remove: () => {},
+        };
+
+        this.croppingArea.on('background-loaded', () => {
+          expect(this.croppingArea._backgroundLayer).not.toEqual(oldLayer);
+          done();
         });
 
-        this.croppingArea.trigger('scale', .5);
-
-        expect(this.croppingArea._image.lockMovementY).toEqual(true);
-
-        done();
-      });
-    });
-
-    it('unlocks vertical pan when it is true and there is room to pan vertically', function(done) {
-      this.loadImage({ allowLetterboxing: true }).then(() => {
-        spyOn(this.croppingArea._cropArea, 'get').and.callFake((arg) => {
-          return {
-            top: -100,
-          }[arg];
-        });
-
-        this.croppingArea.trigger('scale', .5);
-
-        expect(this.croppingArea._image.lockMovementY).toEqual(false);
-
-        done();
-      });
-    });
-
-    it('locks horizontal pan when it is true and there is no room to pan horizontally', function(done) {
-      this.loadImage({ allowLetterboxing: true }).then(() => {
-        spyOn(this.croppingArea._cropArea, 'get').and.callFake((arg) => {
-          return {
-            left: 500,
-          }[arg];
-        });
-
-        this.croppingArea.trigger('scale', .5);
-
-        expect(this.croppingArea._image.lockMovementX).toEqual(true);
-
-        done();
-      });
-    });
-
-    it('unlocks horizontal pan when it is true and there is room to pan horizontally', function(done) {
-      this.loadImage({ allowLetterboxing: true }).then(() => {
-        spyOn(this.croppingArea._cropArea, 'get').and.callFake((arg) => {
-          return {
-            left: -500,
-          }[arg];
-        });
-
-        this.croppingArea.trigger('scale', .5);
-
-        expect(this.croppingArea._image.lockMovementX).toEqual(false);
-
-        done();
+        this.croppingArea.trigger('set-image', images.flower, {});
       });
     });
   });
 
-  describe('backgroundType', function() {
-    beforeEach(function() {
-      this.createCroppingAreaWithBackground = (backgroundType, data = {}) => {
-        return new Promise(resolve => {
-          this.croppingArea = createCroppingArea(this.$el, {
-            backgroundType,
-            ...data,
+  describe('models', function() {
+    describe('allowLetterboxing', function() {
+      it('locks vertical pan when it is true and there is no room to pan vertically', function(done) {
+        this.loadImage({ allowLetterboxing: true }).then(() => {
+          spyOn(this.croppingArea._cropArea, 'get').and.callFake((arg) => {
+            return {
+              top: 100,
+            }[arg];
           });
 
-          spyOn(this.croppingArea, '_createSolidBackground').and.callThrough();
-          spyOn(this.croppingArea, '_createTransparencyBackground').and.callThrough();
+          this.croppingArea.trigger('scale', .5);
 
-          this.croppingArea.trigger('set-image', images.flower, {});
+          expect(this.croppingArea._image.lockMovementY).toEqual(true);
 
-          this.croppingArea.on('background-loaded', resolve);
+          done();
         });
-      };
-    });
+      });
 
-    it('generates image background when it is "image"', function(done) {
-      this.createCroppingAreaWithBackground('image').then(() => {
-        expect(this.croppingArea._backgroundCanvas).toExist();
-        expect(this.croppingArea._backgroundCanvas.contextContainer.filter).toEqual('blur(70px) brightness(.8)');
-        done();
+      it('unlocks vertical pan when it is true and there is room to pan vertically', function(done) {
+        this.loadImage({ allowLetterboxing: true }).then(() => {
+          spyOn(this.croppingArea._cropArea, 'get').and.callFake((arg) => {
+            return {
+              top: -100,
+            }[arg];
+          });
+
+          this.croppingArea.trigger('scale', .5);
+
+          expect(this.croppingArea._image.lockMovementY).toEqual(false);
+
+          done();
+        });
+      });
+
+      it('locks horizontal pan when it is true and there is no room to pan horizontally', function(done) {
+        this.loadImage({ allowLetterboxing: true }).then(() => {
+          spyOn(this.croppingArea._cropArea, 'get').and.callFake((arg) => {
+            return {
+              left: 500,
+            }[arg];
+          });
+
+          this.croppingArea.trigger('scale', .5);
+
+          expect(this.croppingArea._image.lockMovementX).toEqual(true);
+
+          done();
+        });
+      });
+
+      it('unlocks horizontal pan when it is true and there is room to pan horizontally', function(done) {
+        this.loadImage({ allowLetterboxing: true }).then(() => {
+          spyOn(this.croppingArea._cropArea, 'get').and.callFake((arg) => {
+            return {
+              left: -500,
+            }[arg];
+          });
+
+          this.croppingArea.trigger('scale', .5);
+
+          expect(this.croppingArea._image.lockMovementX).toEqual(false);
+
+          done();
+        });
       });
     });
 
-    it('generates solid color background when it is "solid"', function(done) {
-      const backgroundHex = '#000000';
+    describe('backgroundType', function() {
+      beforeEach(function() {
+        this.createCroppingAreaWithBackground = (backgroundType, data = {}) => {
+          return new Promise(resolve => {
+            this.croppingArea = createCroppingArea(this.$el, {
+              backgroundType,
+              ...data,
+            });
 
-      this.createCroppingAreaWithBackground('solid', {
-        backgroundHex,
-        canvasWidth: 100,
-        canvasHeight: 100,
-      }).then(() => {
-        expect(this.croppingArea._createSolidBackground).toHaveBeenCalled();
-        done();
+            spyOn(this.croppingArea, '_createSolidBackground').and.callThrough();
+            spyOn(this.croppingArea, '_createTransparencyBackground').and.callThrough();
+
+            this.croppingArea.trigger('set-image', images.flower, {});
+
+            this.croppingArea.on('background-loaded', resolve);
+          });
+        };
       });
-    });
 
-    it('generates transparency background when it is not set', function(done) {
-      this.createCroppingAreaWithBackground(null).then(() => {
-        expect(this.croppingArea._createTransparencyBackground).toHaveBeenCalled();
-        done();
+      it('generates image background when it is "image"', function(done) {
+        this.createCroppingAreaWithBackground('image').then(() => {
+          expect(this.croppingArea._backgroundCanvas).toExist();
+          expect(this.croppingArea._backgroundCanvas.contextContainer.filter).toEqual('blur(70px) brightness(.8)');
+          done();
+        });
+      });
+
+      it('generates solid color background when it is "solid"', function(done) {
+        const backgroundHex = '#000000';
+
+        this.createCroppingAreaWithBackground('solid', {
+          backgroundHex,
+          canvasWidth: 100,
+          canvasHeight: 100,
+        }).then(() => {
+          expect(this.croppingArea._createSolidBackground).toHaveBeenCalled();
+          done();
+        });
+      });
+
+      it('generates transparency background when it is not set', function(done) {
+        this.createCroppingAreaWithBackground(null).then(() => {
+          expect(this.croppingArea._createTransparencyBackground).toHaveBeenCalled();
+          done();
+        });
       });
     });
   });
