@@ -40,6 +40,14 @@ describe('UploadArea', function() {
     });
   });
 
+  it('should not instantiate without proper uploaderOptions', function() {
+    this.uploadArea = this.create({
+      uploaderOptions: null,
+    });
+
+    expect(this.uploadArea._uploader).toBe(undefined);
+  });
+
   it('supplies a default title', function() {
     expect(this.options.titleText).not.toBeDefined();
 

@@ -312,11 +312,13 @@ const HelicropterView = View.extend({
   },
 
   _enableImageManipulation() {
-    this._uploadArea.hide();
+    if (!this._model.get('previewMode')) {
+      this._uploadArea.hide();
+
+      this._zoomSlider.enable();
+    }
 
     this._croppingArea.show();
-
-    this._zoomSlider.enable();
 
     this.trigger('controls:enabled');
   },
@@ -365,15 +367,6 @@ const HelicropterView = View.extend({
 
 const Helicropter = Controller.extend({
   _defaults: {
-    uploaderOptions: {
-      request: {
-        endpoint: '',
-        accessKey: '',
-      },
-      signature: {
-        endpoint: '',
-      },
-    },
     canvasSize: {
       width: 432,
       height: 300,
