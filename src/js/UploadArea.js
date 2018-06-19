@@ -45,6 +45,10 @@ export default View.extend({
   init(...args) {
     this._super(...args);
 
+    if (!this._model.uploaderOptions) {
+      return;
+    }
+
     const config = Object.assign({
       drift: 0,
       cors: {

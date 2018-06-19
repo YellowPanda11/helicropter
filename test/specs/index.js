@@ -326,6 +326,26 @@ describe('Helicropter', function() {
     });
   });
 
+  describe('when it is in preview mode', function() {
+    it('should just show croppingArea', function(done) {
+      this.helicropter = this._createWithInitialImage({
+        previewMode: true,
+      });
+
+      spyOn(this.helicropter._view._uploadArea, 'show');
+      spyOn(this.helicropter._view._zoomSlider, 'enable');
+
+      this.helicropter.on('image:loaded', function() {
+        expect(this.helicropter._view._uploadArea.show).not.toHaveBeenCalled();
+        expect(this.helicropter._view._zoomSlider.enable).not.toHaveBeenCalled();
+        expect(this.helicropter._view._croppingArea.$view).not.toHaveClass('hide');
+        done();
+      }.bind(this));
+
+      this.helicropter._view._croppingArea.trigger('image-loaded');
+    });
+  });
+
   describe('when given preview crop configuration', function() {
     beforeEach(function() {
       this.helicropter = this._createWithInitialImage({
