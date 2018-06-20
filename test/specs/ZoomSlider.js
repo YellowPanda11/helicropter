@@ -2,8 +2,15 @@ import { maxScale, ZoomSlider } from 'ZoomSlider';
 
 describe('ZoomSlider', function() {
   beforeEach(function() {
+    this.getExpectedSliderStyle = (value) => {
+      return `background: linear-gradient(to right, rgb(255, 255, 255) ${value}%, rgb(0, 0, 0) ${value}%);`;
+    };
+
     this.$el = affix('.js-zoom-slider-parent');
-    this.zoomSlider = new ZoomSlider();
+    this.zoomSlider = new ZoomSlider({
+      sliderTrackBackgroundColor: '#000',
+      sliderTrackActiveColor: '#fff',
+    });
     this.zoomSlider.render(this.$el);
   });
 
@@ -19,6 +26,15 @@ describe('ZoomSlider', function() {
     it('creates slider input binding', function(done) {
       this.zoomSlider.on('scale', done);
       this.zoomSlider.$view.find('.js-scale-slider').val(50).trigger('input');
+    });
+
+    it('colors _$slider initially', function() {
+      const value = 20;
+      const expectedStyle = this.getExpectedSliderStyle(value);
+
+      this.zoomSlider.$view.find('.js-scale-slider').val(value).trigger('input');
+
+      expect(this.zoomSlider.$view.find('.js-scale-slider')[0].getAttribute('style')).toEqual(expectedStyle);
     });
   });
 
@@ -166,6 +182,37 @@ describe('ZoomSlider', function() {
         });
 
         this.zoomSlider.trigger('set-crop-size', { minScale: 0.5 });
+      });
+    });
+
+    describe('Additional behaviors', function() {
+      it('colors _$slider when user slides the input range', function() {
+        const value = 50;
+        const expectedStyle = this.getExpectedSliderStyle(value);
+
+        this.zoomSlider.$view.find('.js-scale-slider').val(value).trigger('input');
+
+        expect(this.zoomSlider.$view.find('.js-scale-slider')[0].getAttribute('style')).toEqual(expectedStyle);
+      });
+
+      it('should add "helicropter--edge-slider" class if it is edge', function() {
+        this.zoomSlider = new ZoomSlider();
+
+        spyOn(this.zoomSlider, '_detectEdge').and.returnValue(true);
+
+        this.zoomSlider.render(this.$el);
+
+        expect(this.zoomSlider.$view.find('.js-scale-slider')).toHaveClass('helicropter--edge-slider');
+      });
+
+      it('should not add "helicropter--edge-slider" class if it is not edge', function() {
+        this.zoomSlider = new ZoomSlider();
+
+        spyOn(this.zoomSlider, '_detectEdge').and.returnValue(false);
+
+        this.zoomSlider.render(this.$el);
+
+        expect(this.zoomSlider.$view.find('.js-scale-slider')).not.toHaveClass('helicropter--edge-slider');
       });
     });
   });
