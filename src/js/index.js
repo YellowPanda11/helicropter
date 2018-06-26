@@ -47,7 +47,10 @@ const HelicropterView = View.extend({
       backgroundType: this._model.get('backgroundType'),
     });
 
-    this._zoomSlider = new ZoomSlider();
+    this._zoomSlider = new ZoomSlider({
+      sliderTrackBackgroundColor: this._model.get('sliderTrackBackgroundColor'),
+      sliderTrackActiveColor: this._model.get('sliderTrackActiveColor'),
+    });
 
     if (this._model.get('showRatioLock')) {
       this._ratioLock = new RatioLock({
