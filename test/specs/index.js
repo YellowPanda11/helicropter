@@ -51,6 +51,30 @@ describe('Helicropter', function() {
     this.helicropter.destroy();
   });
 
+  describe('ZoomSlider', function() {
+    describe('sliderTrackBackgroundColor', function() {
+      it('should instantiate ZoomSlider with sliderTrackBackgroundColor', function() {
+        const sliderTrackBackgroundColor = '#ddd';
+        this.helicropter = this._createWithoutInitialImage({
+          sliderTrackBackgroundColor,
+        });
+
+        expect(this.helicropter._view._zoomSlider._model.sliderTrackBackgroundColor).toEqual(sliderTrackBackgroundColor);
+      });
+    });
+
+    describe('sliderTrackActiveColor', function() {
+      it('should instantiate ZoomSlider with sliderTrackActiveColor', function() {
+        const sliderTrackActiveColor = '#ff0000';
+        this.helicropter = this._createWithoutInitialImage({
+          sliderTrackActiveColor,
+        });
+
+        expect(this.helicropter._view._zoomSlider._model.sliderTrackActiveColor).toEqual(sliderTrackActiveColor);
+      });
+    });
+  });
+
   describe('#crop', function() {
     beforeEach(function() {
       this.helicropter = this._createWithInitialImage();
