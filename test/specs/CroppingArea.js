@@ -305,6 +305,46 @@ describe('CroppingArea', function() {
       });
     });
 
+    it('allows x/y coordinates less than 0 when letterboxing', function() {
+      this.croppingArea._model.allowLetterboxing = true;
+
+      spyOn(this.croppingArea, '_getImageProp').and.returnValue(20);
+      spyOn(this.croppingArea, '_getCropAreaProp').and.returnValue(0);
+
+      this.croppingArea._cropArea.width = 100;
+      this.croppingArea._cropArea.height = 50;
+
+      this.croppingArea._image = { getScaleX: () => 1.0 };
+
+      expect(this.croppingArea.getCropData()).toEqual({
+        x: -20,
+        y: -20,
+        width: this.croppingArea._cropArea.width,
+        height: this.croppingArea._cropArea.height,
+        scale: 1.0,
+      });
+    });
+
+    it('allows x/y coordinates less than 0 when transparency is allowed', function() {
+      this.croppingArea._model.allowTransparency = true;
+
+      spyOn(this.croppingArea, '_getImageProp').and.returnValue(10);
+      spyOn(this.croppingArea, '_getCropAreaProp').and.returnValue(0);
+
+      this.croppingArea._cropArea.width = 100;
+      this.croppingArea._cropArea.height = 50;
+
+      this.croppingArea._image = { getScaleX: () => 1.0 };
+
+      expect(this.croppingArea.getCropData()).toEqual({
+        x: -10,
+        y: -10,
+        width: this.croppingArea._cropArea.width,
+        height: this.croppingArea._cropArea.height,
+        scale: 1.0,
+      });
+    });
+
     it('does not allow height/width less than 1', function() {
       spyOn(this.croppingArea, '_getImageProp').and.returnValue(1);
       spyOn(this.croppingArea, '_getCropAreaProp').and.returnValue(0);
@@ -435,6 +475,19 @@ describe('CroppingArea', function() {
         y: 7,
         width: 75,
         height: 300,
+      });
+    });
+
+    it('does not clamp coordinates to native width/height if scaled width/height is greater than native width/height and transparency is allowed', function() {
+      this.croppingArea._model.allowTransparency = true;
+      this.croppingArea._cropArea.width = 300;
+      this.croppingArea._cropArea.height = 300;
+
+      expect(this.croppingArea.getDimensions()).toEqual({
+        x: 10,
+        y: 20,
+        width: 600,
+        height: 600,
       });
     });
   });

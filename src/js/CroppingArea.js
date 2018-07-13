@@ -165,10 +165,12 @@ export default View.extend({
       scale: this._image.getScaleX(),
     };
 
-    return Object.assign({}, retVal, {
-      x: this._model.allowLetterboxing ? retVal.x : Math.max(0, retVal.x),
-      y: this._model.allowLetterboxing ? retVal.y : Math.max(0, retVal.y),
-    });
+    if (this._shouldClampBounds()) {
+      retVal.x = Math.max(0, retVal.x);
+      retVal.y = Math.max(0, retVal.y);
+    }
+
+    return retVal;
   },
 
   getDimensions() {
@@ -193,10 +195,14 @@ export default View.extend({
     return scaledValues;
   },
 
+  _shouldClampBounds() {
+    return !this._model.allowLetterboxing && !this._model.allowTransparency;
+  },
+
   _getReductionRatio(scaledValues) {
     let reductionRatio = 1;
 
-    if (this._model.allowLetterboxing) {
+    if (!this._shouldClampBounds()) {
       return reductionRatio;
     }
 
