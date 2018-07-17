@@ -267,12 +267,16 @@ const HelicropterView = View.extend({
       },
     });
 
-    this._zoomSlider.on('image-non-scalable', () => {
-      this._pauseControls();
-    });
-
-    this._zoomSlider.on('image-scalable', () => {
-      this._resumeControls();
+    this.listenTo(this._zoomSlider, {
+      'image-non-scalable'() {
+        this._pauseControls();
+      },
+      'image-scalable'() {
+        this._resumeControls();
+      },
+      scale() {
+        this.trigger('slider:changed');
+      },
     });
 
     this.on('remove-image', () => {
@@ -389,7 +393,7 @@ const Helicropter = Controller.extend({
 
   init(model) {
     this._super(extend({}, this._defaults, model));
-    this.relay(this._view, 'controls:enabled controls:disabled controls:paused controls:resumed image:uploading image:processing image:uploaded image:loaded error:upload image:cancelled');
+    this.relay(this._view, 'slider:changed controls:enabled controls:disabled controls:paused controls:resumed image:uploading image:processing image:uploaded image:loaded error:upload image:cancelled');
   },
 
   crop() {

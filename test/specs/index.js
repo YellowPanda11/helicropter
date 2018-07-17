@@ -579,4 +579,15 @@ describe('Helicropter', function() {
       this.helicropter._view._uploadArea.trigger('image-processing');
     });
   });
+
+  describe('when the slider is changed', function() {
+    it('should emit slider:changed event', function(done) {
+      this.helicropter = this._createWithInitialImage();
+      const $slider = this.helicropter._view._zoomSlider.$view.find('.js-scale-slider');
+
+      this.helicropter.on('slider:changed', done);
+
+      $slider.trigger('input');
+    });
+  });
 });
